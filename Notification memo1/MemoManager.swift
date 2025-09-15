@@ -12,7 +12,7 @@ import UserNotifications
 class MemoManager: ObservableObject {
     @Published var memos: [Memo] = []
     @Published var deletedMemos: [Memo] = []
-    @Published var sortOption: SortOption = .dateCreated
+    @Published var sortOption: SortOption = .manual
     @Published var showingDeletedItems = false
     
     private let userDefaults = UserDefaults.standard
@@ -124,18 +124,15 @@ class MemoManager: ObservableObject {
     
     // MARK: - ソート機能
     var sortedMemos: [Memo] {
-        switch sortOption {
-        case .dateCreated:
-            return memos.sorted { $0.createdDate > $1.createdDate }
-        case .dateNotification:
-            return memos.sorted { memo1, memo2 in
-                guard let date1 = memo1.notificationDate else { return false }
-                guard let date2 = memo2.notificationDate else { return true }
-                return date1 < date2
-            }
-        case .alphabetical:
-            return memos.sorted { $0.title < $1.title }
-        }
+        // 手動並び替えモードのみ - 配列の順序をそのまま使用
+        return memos
+    }
+    
+    // MARK: - 並び替え機能
+    func moveMemos(from source: IndexSet, to destination: Int) {
+        // 配列の順序を直接変更
+        memos.move(fromOffsets: source, toOffset: destination)
+        saveMemos()
     }
     
     // MARK: - 通知機能

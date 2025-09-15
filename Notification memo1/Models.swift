@@ -61,8 +61,6 @@ enum NotificationInterval: String, CaseIterable, Codable {
 
 // ソート方法
 enum SortOption: String, CaseIterable {
-    case dateCreated = "作成日順"
-    case dateNotification = "通知日順"
-    case alphabetical = "アルファベット順"
+    case manual = "手動並び替え"
 }
 
