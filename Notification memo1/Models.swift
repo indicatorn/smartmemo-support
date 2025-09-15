@@ -17,6 +17,7 @@ struct Memo: Identifiable, Codable {
     var isCompleted: Bool = false
     var isDeleted: Bool = false
     var notificationInterval: NotificationInterval = .none
+    var genre: String = "すべてのメモ" // デフォルトジャンル
     
     var formattedDate: String {
         let formatter = DateFormatter()
@@ -62,5 +63,19 @@ enum NotificationInterval: String, CaseIterable, Codable {
 // ソート方法
 enum SortOption: String, CaseIterable {
     case manual = "手動並び替え"
+}
+
+// ジャンル管理
+struct Genre: Identifiable, Codable {
+    let id = UUID()
+    var name: String
+    var isDefault: Bool = false
+    
+    static let defaultGenres = [
+        Genre(name: "すべてのメモ", isDefault: true),
+        Genre(name: "買い物"),
+        Genre(name: "仕事"),
+        Genre(name: "プライベート")
+    ]
 }
 

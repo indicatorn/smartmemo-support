@@ -12,22 +12,47 @@ struct ContentView: View {
     @State private var showingAddMemo = false
     @State private var showingEditMemo: Memo?
     @State private var isEditMode = false
-    @State private var selectedMemos: Set<UUID> = []
+    @State private var showingSideMenu = false
     
     var body: some View {
-        NavigationView {
-            VStack(spacing: 0) {
-                // ヘッダー
-                headerView
-                
-                // 新しいメモを作成ボタン
-                addMemoButton
-                
-                // メモリスト
-                memoListView
+        ZStack {
+            // メインコンテンツ
+            NavigationView {
+                VStack(spacing: 0) {
+                    // ヘッダー
+                    headerView
+                    
+                    // 新しいメモを作成ボタン
+                    addMemoButton
+                    
+                    // メモリスト
+                    memoListView
+                }
+                .background(Color(red: 0.95, green: 0.95, blue: 0.95))
+                .navigationBarHidden(true)
             }
-            .background(Color(red: 0.95, green: 0.95, blue: 0.95))
-            .navigationBarHidden(true)
+            .offset(x: showingSideMenu ? 280 : 0)
+            .scaleEffect(showingSideMenu ? 0.9 : 1.0)
+            .overlay(
+                // サイドメニュー表示時のオーバーレイ
+                showingSideMenu ? 
+                Color.black.opacity(0.3)
+                    .onTapGesture {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            showingSideMenu = false
+                        }
+                    }
+                : nil
+            )
+            
+            // サイドメニュー
+            if showingSideMenu {
+                HStack {
+                    SideMenuView(memoManager: memoManager, isShowing: $showingSideMenu)
+                    Spacer()
+                }
+                .transition(.move(edge: .leading))
+            }
         }
         .sheet(isPresented: $showingAddMemo) {
             AddEditMemoView(memoManager: memoManager)
@@ -35,13 +60,23 @@ struct ContentView: View {
         .sheet(item: $showingEditMemo) { memo in
             AddEditMemoView(memoManager: memoManager, editingMemo: memo)
         }
+        .onChange(of: showingAddMemo) { newValue in
+            if newValue {
+                // メモ作成画面を開く時はサイドメニューを閉じる
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    showingSideMenu = false
+                }
+            }
+        }
     }
     
     // MARK: - ヘッダービュー
     private var headerView: some View {
         HStack {
             Button(action: {
-                // ハンバーガーメニュー（将来的に実装）
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    showingSideMenu.toggle()
+                }
             }) {
                 Image(systemName: "line.horizontal.3")
                     .font(.title2)
@@ -50,7 +85,7 @@ struct ContentView: View {
             
             Spacer()
             
-            Text("TODO")
+            Text(memoManager.showingDeletedItems ? "削除済み" : memoManager.selectedGenre)
                 .font(.title)
                 .fontWeight(.bold)
                 .foregroundColor(.white)
@@ -59,21 +94,15 @@ struct ContentView: View {
             
             Button(action: {
                 if isEditMode {
-                    if selectedMemos.isEmpty {
-                        // 編集モード終了
-                        isEditMode = false
-                    } else {
-                        // 選択されたメモを削除
-                        deleteSelectedMemos()
-                    }
+                    // 編集モード終了
+                    isEditMode = false
                 } else {
                     // 編集モード開始 - 即座に手動並び替えモードに切り替え
                     memoManager.sortOption = .manual
                     isEditMode = true
-                    selectedMemos.removeAll()
                 }
             }) {
-                Text(buttonTitle)
+                Text(isEditMode ? "完了" : "編集")
                     .font(.system(size: 16))
                     .foregroundColor(.white)
             }
@@ -125,15 +154,7 @@ struct ContentView: View {
                         MemoRowView(
                             memo: memo, 
                             memoManager: memoManager,
-                            isEditMode: isEditMode,
-                            isSelected: selectedMemos.contains(memo.id),
-                            onToggleSelection: {
-                                if selectedMemos.contains(memo.id) {
-                                    selectedMemos.remove(memo.id)
-                                } else {
-                                    selectedMemos.insert(memo.id)
-                                }
-                            }
+                            isEditMode: isEditMode
                         ) {
                             if !isEditMode {
                                 showingEditMemo = memo
@@ -155,28 +176,6 @@ struct ContentView: View {
     private func moveMemos(from source: IndexSet, to destination: Int) {
         memoManager.moveMemos(from: source, to: destination)
     }
-    
-    // MARK: - ボタンタイトル
-    private var buttonTitle: String {
-        if !isEditMode {
-            return "編集"
-        } else if selectedMemos.isEmpty {
-            return "完了"
-        } else {
-            return "削除"
-        }
-    }
-    
-    // MARK: - 選択されたメモを削除
-    private func deleteSelectedMemos() {
-        for memoId in selectedMemos {
-            if let memo = memoManager.memos.first(where: { $0.id == memoId }) {
-                memoManager.deleteMemo(memo)
-            }
-        }
-        selectedMemos.removeAll()
-        isEditMode = false
-    }
 }
 
 // MARK: - メモ行ビュー
@@ -184,45 +183,33 @@ struct MemoRowView: View {
     let memo: Memo
     let memoManager: MemoManager
     let isEditMode: Bool
-    let isSelected: Bool
-    let onToggleSelection: () -> Void
     let onEdit: () -> Void
     
     var body: some View {
         HStack(spacing: 12) {
-            // 左端の丸いマーク
-            Button(action: {
-                if isEditMode {
-                    // 編集モード時は選択切り替え
-                    onToggleSelection()
-                } else {
-                    // 通常モード時は完了切り替え
+            // 通常モードでのみチェックボタンを表示
+            if !isEditMode {
+                Button(action: {
+                    print("完了切り替え実行")
                     memoManager.toggleCompletion(for: memo)
-                }
-            }) {
-                Circle()
-                    .stroke(Color.gray, lineWidth: 2)
-                    .frame(width: 24, height: 24)
-                    .overlay(
-                        Group {
-                            if isEditMode && isSelected {
-                                // 編集モード時の選択状態
-                                Image(systemName: "checkmark")
-                                    .font(.system(size: 12, weight: .bold))
-                                    .foregroundColor(.white)
-                            } else if !isEditMode && memo.isCompleted {
-                                // 通常モード時の完了状態
-                                Circle()
-                                    .fill(Color(red: 0.4, green: 0.8, blue: 0.6))
-                                    .frame(width: 20, height: 20)
-                            }
-                        }
-                    )
-                    .background(
+                }) {
+                    ZStack {
+                        // 枠線の円
                         Circle()
-                            .fill(isEditMode && isSelected ? Color(red: 0.4, green: 0.8, blue: 0.6) : Color.clear)
+                            .stroke(Color.gray, lineWidth: 2)
                             .frame(width: 24, height: 24)
-                    )
+                        
+                        // 完了状態の表示
+                        if memo.isCompleted {
+                            Circle()
+                                .fill(Color(red: 0.4, green: 0.8, blue: 0.6))
+                                .frame(width: 16, height: 16)
+                        }
+                    }
+                }
+                .frame(width: 44, height: 44) // タップ領域を広げる
+                .contentShape(Rectangle()) // タップ可能領域を明確にする
+                .buttonStyle(PlainButtonStyle()) // ボタンスタイルを明確にする
             }
             
             // 編集モード時のハンバーガーメニュー
@@ -238,7 +225,6 @@ struct MemoRowView: View {
                 Text(memo.title)
                     .font(.system(size: 16))
                     .foregroundColor(.black)
-                    .strikethrough(memo.isCompleted && !isEditMode)
                 
                 HStack {
                     Text(memo.formattedDate)
@@ -277,7 +263,9 @@ struct MemoRowView: View {
         .background(Color.white)
         .cornerRadius(8)
         .onTapGesture {
-            onEdit()
+            if !isEditMode {
+                onEdit()
+            }
         }
         .swipeActions(edge: .trailing) {
             if !isEditMode {

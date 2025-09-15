@@ -14,6 +14,8 @@ class MemoManager: ObservableObject {
     @Published var deletedMemos: [Memo] = []
     @Published var sortOption: SortOption = .manual
     @Published var showingDeletedItems = false
+    @Published var genres: [Genre] = Genre.defaultGenres
+    @Published var selectedGenre: String = "すべてのメモ"
     
     private let userDefaults = UserDefaults.standard
     private let memosKey = "SavedMemos"
@@ -124,8 +126,16 @@ class MemoManager: ObservableObject {
     
     // MARK: - ソート機能
     var sortedMemos: [Memo] {
+        let filteredMemos: [Memo]
+        
+        if selectedGenre == "すべてのメモ" {
+            filteredMemos = memos
+        } else {
+            filteredMemos = memos.filter { $0.genre == selectedGenre }
+        }
+        
         // 手動並び替えモードのみ - 配列の順序をそのまま使用
-        return memos
+        return filteredMemos
     }
     
     // MARK: - 並び替え機能
@@ -133,6 +143,21 @@ class MemoManager: ObservableObject {
         // 配列の順序を直接変更
         memos.move(fromOffsets: source, toOffset: destination)
         saveMemos()
+    }
+    
+    // MARK: - ジャンル管理
+    func addGenre(_ name: String) {
+        let newGenre = Genre(name: name)
+        genres.append(newGenre)
+    }
+    
+    func selectGenre(_ genreName: String) {
+        selectedGenre = genreName
+        showingDeletedItems = false // ジャンル選択時は削除済みビューを閉じる
+    }
+    
+    func showDeletedItems() {
+        showingDeletedItems = true
     }
     
     // MARK: - 通知機能
