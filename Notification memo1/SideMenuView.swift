@@ -10,6 +10,11 @@ import SwiftUI
 struct SideMenuView: View {
     @ObservedObject var memoManager: MemoManager
     @Binding var isShowing: Bool
+    @State private var showingAddGenreAlert = false
+    @State private var newGenreName = ""
+    @State private var editingGenre: Genre?
+    @State private var editingGenreName = ""
+    @State private var showingEditGenreAlert = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -77,8 +82,12 @@ struct SideMenuView: View {
                     
                     Spacer()
                     
-                    if !memoManager.deletedMemos.isEmpty {
-                        Text("\(memoManager.deletedMemos.count)")
+                    let deletedCount = memoManager.selectedGenre == "すべてのメモ" ? 
+                        memoManager.deletedMemos.count : 
+                        memoManager.deletedMemos.filter { $0.genre == memoManager.selectedGenre }.count
+                    
+                    if deletedCount > 0 {
+                        Text("\(deletedCount)")
                             .font(.system(size: 14))
                             .foregroundColor(.white)
                             .padding(.horizontal, 8)
@@ -100,51 +109,103 @@ struct SideMenuView: View {
     // MARK: - ジャンル一覧セクション
     private var genresSection: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // セクションタイトル
+            // セクションタイトルとプラスボタン
             HStack {
                 Text("ジャンル")
                     .font(.system(size: 14))
                     .fontWeight(.medium)
                     .foregroundColor(.gray)
-                    .padding(.horizontal, 20)
-                    .padding(.top, 16)
-                    .padding(.bottom, 8)
                 
                 Spacer()
+                
+                Button(action: {
+                    newGenreName = ""
+                    showingAddGenreAlert = true
+                }) {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.system(size: 16))
+                        .foregroundColor(Color(red: 0.4, green: 0.8, blue: 0.6))
+                }
             }
+            .padding(.horizontal, 20)
+            .padding(.top, 16)
+            .padding(.bottom, 8)
             
             // ジャンルリスト
             ForEach(memoManager.genres) { genre in
-                Button(action: {
-                    memoManager.selectGenre(genre.name)
-                    withAnimation(.easeInOut(duration: 0.3)) {
-                        isShowing = false
+                HStack(spacing: 12) {
+                    // ジャンル選択ボタン
+                    Button(action: {
+                        memoManager.selectGenre(genre.name)
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            isShowing = false
+                        }
+                    }) {
+                        HStack(spacing: 12) {
+                            Image(systemName: genreIcon(for: genre.name))
+                                .font(.system(size: 18))
+                                .foregroundColor(Color(red: 0.4, green: 0.8, blue: 0.6))
+                                .frame(width: 24, height: 24)
+                            
+                            Text(genre.name)
+                                .font(.system(size: 16))
+                                .foregroundColor(.black)
+                            
+                            Spacer()
+                            
+                            let count = memoManager.memos.filter { !$0.isDeleted && (genre.name == "すべてのメモ" || $0.genre == genre.name) }.count
+                            if count > 0 {
+                                Text("\(count)")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 12)
+                        .background(memoManager.selectedGenre == genre.name && !memoManager.showingDeletedItems ? Color(red: 0.4, green: 0.8, blue: 0.6).opacity(0.1) : Color.clear)
                     }
-                }) {
-                    HStack(spacing: 12) {
-                        Image(systemName: genreIcon(for: genre.name))
-                            .font(.system(size: 18))
-                            .foregroundColor(Color(red: 0.4, green: 0.8, blue: 0.6))
-                            .frame(width: 24, height: 24)
-                        
-                        Text(genre.name)
-                            .font(.system(size: 16))
-                            .foregroundColor(.black)
-                        
-                        Spacer()
-                        
-                        let count = memoManager.memos.filter { genre.name == "すべてのメモ" || $0.genre == genre.name }.count
-                        if count > 0 {
-                            Text("\(count)")
+                    
+                    // 編集・削除ボタン（デフォルトジャンル以外）
+                    if !genre.isDefault {
+                        Menu {
+                            Button("編集") {
+                                editingGenre = genre
+                                editingGenreName = genre.name
+                                showingEditGenreAlert = true
+                            }
+                            
+                            Button("削除", role: .destructive) {
+                                memoManager.deleteGenre(genre)
+                            }
+                        } label: {
+                            Image(systemName: "ellipsis")
                                 .font(.system(size: 14))
                                 .foregroundColor(.gray)
+                                .frame(width: 24, height: 24)
                         }
+                        .padding(.trailing, 16)
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 12)
-                    .background(memoManager.selectedGenre == genre.name && !memoManager.showingDeletedItems ? Color(red: 0.4, green: 0.8, blue: 0.6).opacity(0.1) : Color.clear)
                 }
             }
+        }
+        .alert("新しいジャンルを追加", isPresented: $showingAddGenreAlert) {
+            TextField("ジャンル名", text: $newGenreName)
+            Button("追加") {
+                if !newGenreName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    memoManager.addGenre(newGenreName.trimmingCharacters(in: .whitespacesAndNewlines))
+                }
+            }
+            Button("キャンセル", role: .cancel) { }
+        }
+        .alert("ジャンルを編集", isPresented: $showingEditGenreAlert) {
+            TextField("ジャンル名", text: $editingGenreName)
+            Button("保存") {
+                if let genre = editingGenre,
+                   !editingGenreName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    memoManager.updateGenre(genre, newName: editingGenreName.trimmingCharacters(in: .whitespacesAndNewlines))
+                }
+            }
+            Button("キャンセル", role: .cancel) { }
         }
     }
     
@@ -159,6 +220,38 @@ struct SideMenuView: View {
             return "briefcase"
         case "プライベート":
             return "person"
+        case "勉強", "学習":
+            return "book"
+        case "健康", "フィットネス":
+            return "heart"
+        case "旅行":
+            return "airplane"
+        case "家事":
+            return "house"
+        case "趣味":
+            return "star"
+        case "家族":
+            return "person.2"
+        case "友達":
+            return "person.3"
+        case "医療", "病院":
+            return "cross.case"
+        case "会議":
+            return "person.2.square.stack"
+        case "プロジェクト":
+            return "folder.badge.gearshape"
+        case "アイデア":
+            return "lightbulb"
+        case "目標":
+            return "target"
+        case "メモ", "メモリー":
+            return "note.text"
+        case "リスト":
+            return "list.bullet"
+        case "スケジュール":
+            return "calendar"
+        case "タスク":
+            return "checkmark.circle"
         default:
             return "folder"
         }

@@ -85,7 +85,7 @@ struct ContentView: View {
             
             Spacer()
             
-            Text(memoManager.showingDeletedItems ? "削除済み" : memoManager.selectedGenre)
+            Text(memoManager.showingDeletedItems ? "削除済み (\(memoManager.selectedGenre))" : memoManager.selectedGenre)
                 .font(.title)
                 .fontWeight(.bold)
                 .foregroundColor(.white)
@@ -141,7 +141,7 @@ struct ContentView: View {
             if memoManager.showingDeletedItems {
                 ScrollView {
                     LazyVStack(spacing: 0) {
-                        ForEach(memoManager.deletedMemos) { memo in
+                        ForEach(memoManager.filteredDeletedMemos) { memo in
                             DeletedMemoRowView(memo: memo, memoManager: memoManager)
                         }
                     }
@@ -222,9 +222,23 @@ struct MemoRowView: View {
             
             // メモ内容
             VStack(alignment: .leading, spacing: 4) {
-                Text(memo.title)
-                    .font(.system(size: 16))
-                    .foregroundColor(.black)
+                // メモタイトル（ジャンル名は右端に配置）
+                HStack {
+                    Text(memo.title)
+                        .font(.system(size: 16))
+                        .foregroundColor(.black)
+                    
+                    // ジャンル名表示（すべてのメモ表示時のみ、メモ本文の1番右に配置）
+                    if memoManager.selectedGenre == "すべてのメモ" && memo.genre != "すべてのメモ" {
+                        Text(memo.genre)
+                            .font(.system(size: 12))
+                            .foregroundColor(.gray)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 2)
+                            .background(Color.gray.opacity(0.1))
+                            .cornerRadius(4)
+                    }
+                }
                 
                 HStack {
                     Text(memo.formattedDate)
@@ -233,6 +247,7 @@ struct MemoRowView: View {
                     
                     Spacer()
                     
+                    // 通知頻度タグ
                     if memo.notificationInterval != .none {
                         HStack(spacing: 4) {
                             Image(systemName: "bell")
@@ -292,12 +307,11 @@ struct DeletedMemoRowView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(memo.title)
                     .font(.system(size: 16))
-                    .foregroundColor(.gray)
-                    .strikethrough()
+                    .foregroundColor(.black)
                 
                 Text(memo.formattedDate)
                     .font(.system(size: 14))
-                    .foregroundColor(.gray)
+                    .foregroundColor(Color(red: 0.4, green: 0.8, blue: 0.6))
             }
             
             Spacer()

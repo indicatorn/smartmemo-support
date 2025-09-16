@@ -20,9 +20,11 @@ class MemoManager: ObservableObject {
     private let userDefaults = UserDefaults.standard
     private let memosKey = "SavedMemos"
     private let deletedMemosKey = "DeletedMemos"
+    private let genresKey = "SavedGenres"
     
     init() {
         loadMemos()
+        loadGenres()
         requestNotificationPermission()
     }
     
@@ -49,12 +51,30 @@ class MemoManager: ObservableObject {
         }
     }
     
+    func loadGenres() {
+        if let data = userDefaults.data(forKey: genresKey),
+           let decodedGenres = try? JSONDecoder().decode([Genre].self, from: data) {
+            self.genres = decodedGenres
+        } else {
+            // 初回起動時はデフォルトジャンルを使用
+            self.genres = Genre.defaultGenres
+            saveGenres()
+        }
+    }
+    
+    func saveGenres() {
+        if let encoded = try? JSONEncoder().encode(genres) {
+            userDefaults.set(encoded, forKey: genresKey)
+        }
+    }
+    
     // MARK: - メモの操作
-    func addMemo(title: String, notificationDate: Date? = nil, interval: NotificationInterval = .none) {
-        let newMemo = Memo(title: title, 
+    func addMemo(title: String, notificationDate: Date? = nil, interval: NotificationInterval = .none, genre: String = "すべてのメモ") {
+        var newMemo = Memo(title: title, 
                           createdDate: Date(),
                           notificationDate: notificationDate,
                           notificationInterval: interval)
+        newMemo.genre = genre
         memos.append(newMemo)
         
         if let notificationDate = notificationDate, interval != .none {
@@ -64,11 +84,12 @@ class MemoManager: ObservableObject {
         saveMemos()
     }
     
-    func updateMemo(_ memo: Memo, title: String, notificationDate: Date? = nil, interval: NotificationInterval = .none) {
+    func updateMemo(_ memo: Memo, title: String, notificationDate: Date? = nil, interval: NotificationInterval = .none, genre: String = "すべてのメモ") {
         if let index = memos.firstIndex(where: { $0.id == memo.id }) {
             memos[index].title = title
             memos[index].notificationDate = notificationDate
             memos[index].notificationInterval = interval
+            memos[index].genre = genre
             
             // 既存の通知をキャンセルして新しい通知をスケジュール
             cancelNotification(for: memo)
@@ -126,16 +147,27 @@ class MemoManager: ObservableObject {
     
     // MARK: - ソート機能
     var sortedMemos: [Memo] {
+        // 削除されていないメモのみを対象
+        let activeMemos = memos.filter { !$0.isDeleted }
         let filteredMemos: [Memo]
         
         if selectedGenre == "すべてのメモ" {
-            filteredMemos = memos
+            filteredMemos = activeMemos
         } else {
-            filteredMemos = memos.filter { $0.genre == selectedGenre }
+            filteredMemos = activeMemos.filter { $0.genre == selectedGenre }
         }
         
         // 手動並び替えモードのみ - 配列の順序をそのまま使用
         return filteredMemos
+    }
+    
+    // 削除済みメモ（ジャンルフィルタリング適用）
+    var filteredDeletedMemos: [Memo] {
+        if selectedGenre == "すべてのメモ" {
+            return deletedMemos
+        } else {
+            return deletedMemos.filter { $0.genre == selectedGenre }
+        }
     }
     
     // MARK: - 並び替え機能
@@ -143,21 +175,6 @@ class MemoManager: ObservableObject {
         // 配列の順序を直接変更
         memos.move(fromOffsets: source, toOffset: destination)
         saveMemos()
-    }
-    
-    // MARK: - ジャンル管理
-    func addGenre(_ name: String) {
-        let newGenre = Genre(name: name)
-        genres.append(newGenre)
-    }
-    
-    func selectGenre(_ genreName: String) {
-        selectedGenre = genreName
-        showingDeletedItems = false // ジャンル選択時は削除済みビューを閉じる
-    }
-    
-    func showDeletedItems() {
-        showingDeletedItems = true
     }
     
     // MARK: - 通知機能
@@ -215,6 +232,76 @@ class MemoManager: ObservableObject {
     
     func cancelNotification(for memo: Memo) {
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [memo.id.uuidString, "\(memo.id.uuidString)_repeat"])
+    }
+    
+    // MARK: - ジャンル管理
+    func addGenre(_ name: String) {
+        // 重複チェック
+        guard !genres.contains(where: { $0.name == name }) else { return }
+        
+        let newGenre = Genre(name: name)
+        genres.append(newGenre)
+        saveGenres()
+    }
+    
+    func updateGenre(_ genre: Genre, newName: String) {
+        // デフォルトジャンルは編集不可
+        guard !genre.isDefault else { return }
+        
+        // 重複チェック
+        guard !genres.contains(where: { $0.name == newName && $0.id != genre.id }) else { return }
+        
+        if let index = genres.firstIndex(where: { $0.id == genre.id }) {
+            genres[index].name = newName
+            
+            // 該当するメモのジャンルも更新
+            for i in 0..<memos.count {
+                if memos[i].genre == genre.name {
+                    memos[i].genre = newName
+                }
+            }
+            
+            // 選択中のジャンルが変更された場合
+            if selectedGenre == genre.name {
+                selectedGenre = newName
+            }
+            
+            saveMemos()
+            saveGenres()
+        }
+    }
+    
+    func deleteGenre(_ genre: Genre) {
+        // デフォルトジャンルは削除不可
+        guard !genre.isDefault else { return }
+        
+        if let index = genres.firstIndex(where: { $0.id == genre.id }) {
+            genres.remove(at: index)
+            
+            // 該当するメモを「すべてのメモ」に移動
+            for i in 0..<memos.count {
+                if memos[i].genre == genre.name {
+                    memos[i].genre = "すべてのメモ"
+                }
+            }
+            
+            // 選択中のジャンルが削除された場合
+            if selectedGenre == genre.name {
+                selectedGenre = "すべてのメモ"
+            }
+            
+            saveMemos()
+            saveGenres()
+        }
+    }
+    
+    func selectGenre(_ genreName: String) {
+        selectedGenre = genreName
+        showingDeletedItems = false
+    }
+    
+    func showDeletedItems() {
+        showingDeletedItems = true
     }
 }
 

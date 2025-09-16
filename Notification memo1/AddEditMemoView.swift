@@ -17,6 +17,7 @@ struct AddEditMemoView: View {
     @State private var hasNotification: Bool = false
     @State private var notificationDate: Date = Date()
     @State private var notificationInterval: NotificationInterval = .none
+    @State private var selectedGenre: String = "すべてのメモ"
     
     init(memoManager: MemoManager, editingMemo: Memo? = nil) {
         self.memoManager = memoManager
@@ -27,6 +28,7 @@ struct AddEditMemoView: View {
             _hasNotification = State(initialValue: memo.notificationDate != nil)
             _notificationDate = State(initialValue: memo.notificationDate ?? Date())
             _notificationInterval = State(initialValue: memo.notificationInterval)
+            _selectedGenre = State(initialValue: memo.genre)
         }
     }
     
@@ -88,6 +90,29 @@ struct AddEditMemoView: View {
                     .font(.system(size: 16))
             }
             
+            // ジャンル選択
+            VStack(alignment: .leading, spacing: 8) {
+                Text("ジャンル")
+                    .font(.headline)
+                    .foregroundColor(.black)
+                
+                Picker("ジャンル", selection: $selectedGenre) {
+                    ForEach(memoManager.genres, id: \.name) { genre in
+                        Text(genre.name).tag(genre.name)
+                    }
+                }
+                .pickerStyle(MenuPickerStyle())
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(Color.white)
+                .cornerRadius(8)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                )
+            }
+            
             // 通知設定
             VStack(alignment: .leading, spacing: 12) {
                 Toggle("通知を設定", isOn: $hasNotification)
@@ -145,11 +170,13 @@ struct AddEditMemoView: View {
             memoManager.updateMemo(editingMemo, 
                                  title: trimmedTitle, 
                                  notificationDate: finalNotificationDate, 
-                                 interval: finalInterval)
+                                 interval: finalInterval,
+                                 genre: selectedGenre)
         } else {
             memoManager.addMemo(title: trimmedTitle, 
                               notificationDate: finalNotificationDate, 
-                              interval: finalInterval)
+                              interval: finalInterval,
+                              genre: selectedGenre)
         }
         
         presentationMode.wrappedValue.dismiss()
