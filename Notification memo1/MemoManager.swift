@@ -130,6 +130,12 @@ class MemoManager: ObservableObject {
         if let index = deletedMemos.firstIndex(where: { $0.id == memo.id }) {
             var restoredMemo = deletedMemos[index]
             restoredMemo.isDeleted = false
+            
+            // タグに対応するシートが存在しない場合は自動的にシートを追加
+            if restoredMemo.genre != "すべてのメモ" && !genres.contains(where: { $0.name == restoredMemo.genre }) {
+                addGenre(restoredMemo.genre)
+            }
+            
             memos.append(restoredMemo)
             deletedMemos.remove(at: index)
             
@@ -284,11 +290,21 @@ class MemoManager: ObservableObject {
         if let index = genres.firstIndex(where: { $0.id == genre.id }) {
             genres.remove(at: index)
             
-            // 該当するメモを「すべてのメモ」に移動
-            for i in 0..<memos.count {
-                if memos[i].genre == genre.name {
-                    memos[i].genre = "すべてのメモ"
+            // 該当するメモを削除済みに移動（タグを維持）
+            let memosToDelete = memos.filter { $0.genre == genre.name }
+            for memo in memosToDelete {
+                // タグを維持したまま削除済みに移動
+                var deletedMemo = memo
+                deletedMemo.isDeleted = true
+                deletedMemos.append(deletedMemo)
+                
+                // 元のメモを削除
+                if let index = memos.firstIndex(where: { $0.id == memo.id }) {
+                    memos.remove(at: index)
                 }
+                
+                // 通知をキャンセル
+                cancelNotification(for: memo)
             }
             
             // 選択中のジャンルが削除された場合
