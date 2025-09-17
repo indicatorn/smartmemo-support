@@ -92,19 +92,46 @@ struct ContentView: View {
             
             Spacer()
             
-            Button(action: {
-                if isEditMode {
-                    // 編集モード終了
-                    isEditMode = false
-                } else {
-                    // 編集モード開始 - 即座に手動並び替えモードに切り替え
-                    memoManager.sortOption = .manual
-                    isEditMode = true
+            // 削除済み表示時は一括操作ボタン、通常時は編集ボタン
+            if memoManager.showingDeletedItems {
+                HStack(spacing: 12) {
+                    if !memoManager.selectedDeletedMemos.isEmpty {
+                        Button(action: {
+                            memoManager.bulkRestoreSelectedDeletedMemos()
+                        }) {
+                            Text("復元")
+                                .font(.system(size: 16))
+                                .foregroundColor(.white)
+                        }
+                        
+                        Button(action: {
+                            memoManager.bulkPermanentlyDeleteSelectedDeletedMemos()
+                        }) {
+                            Text("完全削除")
+                                .font(.system(size: 16))
+                                .foregroundColor(.white)
+                        }
+                    } else {
+                        Text("削除済み")
+                            .font(.system(size: 16))
+                            .foregroundColor(.white)
+                    }
                 }
-            }) {
-                Text(isEditMode ? "完了" : "編集")
-                    .font(.system(size: 16))
-                    .foregroundColor(.white)
+            } else {
+                Button(action: {
+                    if isEditMode {
+                        // 編集モード終了
+                        isEditMode = false
+                    } else {
+                        // 編集モード開始 - 即座に手動並び替えモードに切り替え
+                        memoManager.sortOption = .manual
+                        isEditMode = true
+                    }
+                }) {
+                    Text(isEditMode ? "完了" : "編集")
+                        .font(.system(size: 16))
+                        .foregroundColor(.white)
+                }
             }
         }
         .padding(.horizontal, 20)
@@ -228,8 +255,8 @@ struct MemoRowView: View {
                         .font(.system(size: 16))
                         .foregroundColor(.black)
                     
-                    // ジャンル名表示（すべてのメモ表示時のみ、メモ本文の1番右に配置）
-                    if memoManager.selectedGenre == "すべてのメモ" && memo.genre != "すべてのメモ" {
+                    // ジャンル名表示（すべてのメモ表示時または削除済み表示時、メモ本文の1番右に配置）
+                    if (memoManager.selectedGenre == "すべてのメモ" || memoManager.showingDeletedItems) && memo.genre != "すべてのメモ" {
                         Text(memo.genre)
                             .font(.system(size: 12))
                             .foregroundColor(.gray)
@@ -296,18 +323,52 @@ struct MemoRowView: View {
 // MARK: - 削除済みメモ行ビュー
 struct DeletedMemoRowView: View {
     let memo: Memo
-    let memoManager: MemoManager
+    @ObservedObject var memoManager: MemoManager
     
     var body: some View {
         HStack(spacing: 12) {
-            Circle()
-                .stroke(Color.gray, lineWidth: 2)
-                .frame(width: 24, height: 24)
+            // 選択ボタン
+            ZStack {
+                // 枠線の円
+                Circle()
+                    .stroke(Color.gray, lineWidth: 2)
+                    .frame(width: 24, height: 24)
+                
+                // 選択状態の表示（通常モードと同じ仕様）
+                if memoManager.isDeletedMemoSelected(memo) {
+                    Circle()
+                        .fill(Color(red: 0.4, green: 0.8, blue: 0.6))
+                        .frame(width: 16, height: 16)
+                        .onAppear {
+                            print("選択状態の円を表示: \(memo.title)")
+                        }
+                }
+            }
+            .frame(width: 44, height: 44)
+            .contentShape(Rectangle())
+            .onTapGesture {
+                print("削除済みメモボタンタップ: \(memo.title)")
+                memoManager.toggleDeletedMemoSelection(memo)
+            }
             
             VStack(alignment: .leading, spacing: 4) {
-                Text(memo.title)
-                    .font(.system(size: 16))
-                    .foregroundColor(.black)
+                // メモタイトルとジャンル名を横並びに
+                HStack {
+                    Text(memo.title)
+                        .font(.system(size: 16))
+                        .foregroundColor(.black)
+                    
+                    // ジャンル名表示（削除済み表示時、メモ本文の1番右に配置）
+                    if (memoManager.selectedGenre == "すべてのメモ" || memoManager.showingDeletedItems) && memo.genre != "すべてのメモ" {
+                        Text(memo.genre)
+                            .font(.system(size: 12))
+                            .foregroundColor(.gray)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 2)
+                            .background(Color.gray.opacity(0.1))
+                            .cornerRadius(4)
+                    }
+                }
                 
                 Text(memo.formattedDate)
                     .font(.system(size: 14))
@@ -318,7 +379,20 @@ struct DeletedMemoRowView: View {
         }
         .padding(.vertical, 12)
         .padding(.horizontal, 16)
-        .background(Color.white.opacity(0.8))
+        .background(
+            Group {
+                let isSelected = memoManager.isDeletedMemoSelected(memo)
+                print("背景色設定: \(memo.title) - 選択状態: \(isSelected)")
+                return isSelected ? 
+                    Color(red: 0.4, green: 0.8, blue: 0.6).opacity(0.1) : 
+                    Color.white.opacity(0.8)
+            }
+        )
+        .cornerRadius(8)
+        .onTapGesture {
+            print("削除済みメモ行タップ: \(memo.title)")
+            memoManager.toggleDeletedMemoSelection(memo)
+        }
         .swipeActions(edge: .trailing) {
             Button("復元") {
                 memoManager.restoreMemo(memo)

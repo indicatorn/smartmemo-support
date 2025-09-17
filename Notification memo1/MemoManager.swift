@@ -16,6 +16,11 @@ class MemoManager: ObservableObject {
     @Published var showingDeletedItems = false
     @Published var genres: [Genre] = Genre.defaultGenres
     @Published var selectedGenre: String = "すべてのメモ"
+    @Published var selectedDeletedMemos: Set<UUID> = [] {
+        didSet {
+            print("selectedDeletedMemos が変更されました: \(selectedDeletedMemos.count)個選択中")
+        }
+    }
     
     private let userDefaults = UserDefaults.standard
     private let memosKey = "SavedMemos"
@@ -302,6 +307,52 @@ class MemoManager: ObservableObject {
     
     func showDeletedItems() {
         showingDeletedItems = true
+    }
+    
+    // MARK: - 削除済みメモ選択機能
+    func toggleDeletedMemoSelection(_ memo: Memo) {
+        print("削除済みメモ選択切り替え: \(memo.title)")
+        if selectedDeletedMemos.contains(memo.id) {
+            selectedDeletedMemos.remove(memo.id)
+            print("選択解除: \(memo.title)")
+        } else {
+            selectedDeletedMemos.insert(memo.id)
+            print("選択: \(memo.title)")
+        }
+        print("現在の選択数: \(selectedDeletedMemos.count)")
+        
+        // UI更新を強制的にトリガー
+        DispatchQueue.main.async {
+            self.objectWillChange.send()
+        }
+    }
+    
+    func isDeletedMemoSelected(_ memo: Memo) -> Bool {
+        let isSelected = selectedDeletedMemos.contains(memo.id)
+        print("削除済みメモ選択状態確認: \(memo.title) - \(isSelected) (選択中: \(selectedDeletedMemos.count)個)")
+        print("選択中のID一覧: \(selectedDeletedMemos)")
+        print("現在のメモID: \(memo.id)")
+        return isSelected
+    }
+    
+    func clearDeletedMemoSelection() {
+        selectedDeletedMemos.removeAll()
+    }
+    
+    func bulkRestoreSelectedDeletedMemos() {
+        let selectedMemos = deletedMemos.filter { selectedDeletedMemos.contains($0.id) }
+        for memo in selectedMemos {
+            restoreMemo(memo)
+        }
+        selectedDeletedMemos.removeAll()
+    }
+    
+    func bulkPermanentlyDeleteSelectedDeletedMemos() {
+        let selectedMemos = deletedMemos.filter { selectedDeletedMemos.contains($0.id) }
+        for memo in selectedMemos {
+            permanentlyDelete(memo)
+        }
+        selectedDeletedMemos.removeAll()
     }
 }
 
