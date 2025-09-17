@@ -12,7 +12,9 @@ struct ContentView: View {
     @State private var showingAddMemo = false
     @State private var showingEditMemo: Memo?
     @State private var isEditMode = false
+    @State private var isDeletedEditMode = false
     @State private var showingSideMenu = false
+    @State private var showingGenreSelection = false
     
     var body: some View {
         ZStack {
@@ -27,6 +29,21 @@ struct ContentView: View {
                     
                     // メモリスト
                     memoListView
+                    
+                    // 削除済み編集モード用のボタン
+                    if memoManager.showingDeletedItems && isDeletedEditMode {
+                        deletedEditButtonsView
+                    }
+                    
+                    // 削除済みメモ選択時のアクションバー
+                    if memoManager.showingDeletedItems && !memoManager.selectedDeletedMemos.isEmpty {
+                        selectedDeletedMemosActionView
+                    }
+                    
+                    // 通常モードでメモ選択時のアクションバー
+                    if !memoManager.showingDeletedItems && !memoManager.selectedMemos.isEmpty {
+                        selectedMemosActionView
+                    }
                 }
                 .background(Color(red: 0.95, green: 0.95, blue: 0.95))
                 .navigationBarHidden(true)
@@ -54,12 +71,15 @@ struct ContentView: View {
                 .transition(.move(edge: .leading))
             }
         }
-        .sheet(isPresented: $showingAddMemo) {
-            AddEditMemoView(memoManager: memoManager)
-        }
-        .sheet(item: $showingEditMemo) { memo in
-            AddEditMemoView(memoManager: memoManager, editingMemo: memo)
-        }
+            .sheet(isPresented: $showingAddMemo) {
+                AddEditMemoView(memoManager: memoManager)
+            }
+            .sheet(item: $showingEditMemo) { memo in
+                AddEditMemoView(memoManager: memoManager, editingMemo: memo)
+            }
+            .sheet(isPresented: $showingGenreSelection) {
+                GenreSelectionView(memoManager: memoManager, showingGenreSelection: $showingGenreSelection)
+            }
         .onChange(of: showingAddMemo) { newValue in
             if newValue {
                 // メモ作成画面を開く時はサイドメニューを閉じる
@@ -85,36 +105,29 @@ struct ContentView: View {
             
             Spacer()
             
-            Text(memoManager.showingDeletedItems ? "削除済み (\(memoManager.selectedGenre))" : memoManager.selectedGenre)
+            Text(memoManager.showingDeletedItems ? "削除済み" : memoManager.selectedGenre)
                 .font(.title)
                 .fontWeight(.bold)
                 .foregroundColor(.white)
             
             Spacer()
             
-            // 削除済み表示時は一括操作ボタン、通常時は編集ボタン
+            // 削除済み表示時は編集ボタン（選択なし時のみ）、通常時は編集ボタン
             if memoManager.showingDeletedItems {
-                HStack(spacing: 12) {
-                    if !memoManager.selectedDeletedMemos.isEmpty {
-                        Button(action: {
-                            memoManager.bulkRestoreSelectedDeletedMemos()
-                        }) {
-                            Text("復元")
-                                .font(.system(size: 16))
-                                .foregroundColor(.white)
-                        }
-                        
-                        Button(action: {
-                            memoManager.bulkPermanentlyDeleteSelectedDeletedMemos()
-                        }) {
-                            Text("完全削除")
-                                .font(.system(size: 16))
-                                .foregroundColor(.white)
-                        }
-                    } else {
-                        Text("削除済み")
+                if memoManager.selectedDeletedMemos.isEmpty {
+                    Button(action: {
+                        isDeletedEditMode.toggle()
+                    }) {
+                        Text(isDeletedEditMode ? "完了" : "編集")
                             .font(.system(size: 16))
                             .foregroundColor(.white)
+                    }
+                } else {
+                    // 選択ありの時は透明なボタンでスペースを確保
+                    Button(action: {}) {
+                        Text("編集")
+                            .font(.system(size: 16))
+                            .foregroundColor(.clear)
                     }
                 }
             } else {
@@ -166,15 +179,16 @@ struct ContentView: View {
     private var memoListView: some View {
         Group {
             if memoManager.showingDeletedItems {
-                ScrollView {
-                    LazyVStack(spacing: 0) {
-                        ForEach(memoManager.filteredDeletedMemos) { memo in
-                            DeletedMemoRowView(memo: memo, memoManager: memoManager)
-                        }
+                List {
+                    ForEach(memoManager.filteredDeletedMemos, id: \.id) { memo in
+                        DeletedMemoRowView(memo: memo, memoManager: memoManager, isDeletedEditMode: $isDeletedEditMode)
+                            .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+                            .listRowSeparator(.visible)
+                            .background(Color.clear)
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.top, 16)
                 }
+                .listStyle(PlainListStyle())
+                .background(Color(red: 0.95, green: 0.95, blue: 0.95))
             } else {
                 List {
                     ForEach(memoManager.sortedMemos, id: \.id) { memo in
@@ -188,7 +202,7 @@ struct ContentView: View {
                             }
                         }
                         .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
-                        .listRowSeparator(.hidden)
+                        .listRowSeparator(.visible)
                         .background(Color.clear)
                     }
                     .onMove(perform: isEditMode ? moveMemos : nil)
@@ -197,6 +211,92 @@ struct ContentView: View {
                 .background(Color(red: 0.95, green: 0.95, blue: 0.95))
             }
         }
+    }
+    
+    // MARK: - 削除済み編集モード用のボタン
+    private var deletedEditButtonsView: some View {
+        HStack {
+            Button(action: {
+                // 全て復元
+                memoManager.restoreAllDeletedMemos()
+                isDeletedEditMode = false
+            }) {
+                Text("全て復元")
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(.white)
+            }
+            
+            Spacer()
+            
+            Button(action: {
+                // 全て削除
+                memoManager.permanentlyDeleteAllDeletedMemos()
+                isDeletedEditMode = false
+            }) {
+                Text("全て削除")
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(.white)
+            }
+        }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 16)
+        .background(Color.gray.opacity(0.2))
+        .padding(.bottom, 20)
+    }
+    
+    // MARK: - 選択された削除済みメモ用のアクションバー
+    private var selectedDeletedMemosActionView: some View {
+        HStack {
+            Button(action: {
+                memoManager.bulkRestoreSelectedDeletedMemos()
+            }) {
+                Text("復元")
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(.white)
+            }
+            
+            Spacer()
+            
+            Button(action: {
+                memoManager.bulkPermanentlyDeleteSelectedDeletedMemos()
+            }) {
+                Text("削除")
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(.white)
+            }
+        }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 16)
+        .background(Color.gray.opacity(0.2))
+        .padding(.bottom, 20)
+    }
+    
+    // MARK: - 選択されたメモ用のアクションバー
+    private var selectedMemosActionView: some View {
+        HStack {
+            Button(action: {
+                showingGenreSelection = true
+            }) {
+                Text("移動")
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(.white)
+            }
+            
+            Spacer()
+            
+            Button(action: {
+                // 選択されたメモを削除済みに移動
+                memoManager.bulkDeleteSelectedMemos()
+            }) {
+                Text("削除")
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(.white)
+            }
+        }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 16)
+        .background(Color.gray.opacity(0.2))
+        .padding(.bottom, 20)
     }
     
     // MARK: - 並び替え機能
@@ -217,8 +317,8 @@ struct MemoRowView: View {
             // 通常モードでのみチェックボタンを表示
             if !isEditMode {
                 Button(action: {
-                    print("完了切り替え実行")
-                    memoManager.toggleCompletion(for: memo)
+                    print("メモ選択切り替え実行")
+                    memoManager.toggleMemoSelection(memo)
                 }) {
                     ZStack {
                         // 枠線の円
@@ -226,8 +326,8 @@ struct MemoRowView: View {
                             .stroke(Color.gray, lineWidth: 2)
                             .frame(width: 24, height: 24)
                         
-                        // 完了状態の表示
-                        if memo.isCompleted {
+                        // 選択状態の表示
+                        if memoManager.isMemoSelected(memo) {
                             Circle()
                                 .fill(Color(red: 0.4, green: 0.8, blue: 0.6))
                                 .frame(width: 16, height: 16)
@@ -324,6 +424,7 @@ struct MemoRowView: View {
 struct DeletedMemoRowView: View {
     let memo: Memo
     @ObservedObject var memoManager: MemoManager
+    @Binding var isDeletedEditMode: Bool
     
     var body: some View {
         HStack(spacing: 12) {
@@ -349,6 +450,10 @@ struct DeletedMemoRowView: View {
             .onTapGesture {
                 print("削除済みメモボタンタップ: \(memo.title)")
                 memoManager.toggleDeletedMemoSelection(memo)
+                // 編集モードの場合は解除
+                if isDeletedEditMode {
+                    isDeletedEditMode = false
+                }
             }
             
             VStack(alignment: .leading, spacing: 4) {
@@ -392,6 +497,10 @@ struct DeletedMemoRowView: View {
         .onTapGesture {
             print("削除済みメモ行タップ: \(memo.title)")
             memoManager.toggleDeletedMemoSelection(memo)
+            // 編集モードの場合は解除
+            if isDeletedEditMode {
+                isDeletedEditMode = false
+            }
         }
         .swipeActions(edge: .trailing) {
             Button("復元") {
@@ -399,10 +508,71 @@ struct DeletedMemoRowView: View {
             }
             .tint(.green)
             
-            Button("完全削除") {
+            Button("削除") {
                 memoManager.permanentlyDelete(memo)
             }
             .tint(.red)
+        }
+    }
+}
+
+// MARK: - ジャンル選択ビュー
+struct GenreSelectionView: View {
+    @ObservedObject var memoManager: MemoManager
+    @Binding var showingGenreSelection: Bool
+    
+    var body: some View {
+        NavigationView {
+            List {
+                ForEach(memoManager.genres.filter { !$0.isDefault || $0.name == "すべてのメモ" }) { genre in
+                    Button(action: {
+                        // 選択されたメモを指定されたジャンルに移動
+                        memoManager.moveSelectedMemosToGenre(genre.name)
+                        showingGenreSelection = false
+                    }) {
+                        HStack {
+                            Image(systemName: genreIcon(for: genre.name))
+                                .foregroundColor(Color(red: 0.4, green: 0.8, blue: 0.6))
+                                .frame(width: 24)
+                            
+                            Text(genre.name)
+                                .foregroundColor(.primary)
+                            
+                            Spacer()
+                            
+                            // 選択中のメモ数を表示
+                            Text("\(memoManager.selectedMemos.count)個")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 2)
+                                .background(Color.gray.opacity(0.2))
+                                .cornerRadius(4)
+                        }
+                        .padding(.vertical, 4)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                }
+            }
+            .navigationTitle("ジャンルを選択")
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarItems(
+                trailing: Button("キャンセル") {
+                    showingGenreSelection = false
+                }
+            )
+        }
+    }
+    
+    private func genreIcon(for genreName: String) -> String {
+        switch genreName {
+        case "すべてのメモ": return "doc.text"
+        case "買い物": return "cart"
+        case "仕事": return "briefcase"
+        case "プライベート": return "person"
+        case "勉強": return "book"
+        case "その他": return "folder"
+        default: return "folder"
         }
     }
 }

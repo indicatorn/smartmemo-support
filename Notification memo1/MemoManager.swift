@@ -16,6 +16,7 @@ class MemoManager: ObservableObject {
     @Published var showingDeletedItems = false
     @Published var genres: [Genre] = Genre.defaultGenres
     @Published var selectedGenre: String = "すべてのメモ"
+    @Published var selectedMemos: Set<UUID> = []
     @Published var selectedDeletedMemos: Set<UUID> = [] {
         didSet {
             print("selectedDeletedMemos が変更されました: \(selectedDeletedMemos.count)個選択中")
@@ -353,6 +354,66 @@ class MemoManager: ObservableObject {
             permanentlyDelete(memo)
         }
         selectedDeletedMemos.removeAll()
+    }
+    
+    // MARK: - 全ての削除済みメモを復元
+    func restoreAllDeletedMemos() {
+        let allDeletedMemos = filteredDeletedMemos
+        for memo in allDeletedMemos {
+            restoreMemo(memo)
+        }
+    }
+    
+    // MARK: - 全ての削除済みメモを完全削除
+    func permanentlyDeleteAllDeletedMemos() {
+        let allDeletedMemos = filteredDeletedMemos
+        for memo in allDeletedMemos {
+            permanentlyDelete(memo)
+        }
+    }
+    
+    // MARK: - 通常モード用の選択機能
+    func toggleMemoSelection(_ memo: Memo) {
+        if selectedMemos.contains(memo.id) {
+            selectedMemos.remove(memo.id)
+        } else {
+            selectedMemos.insert(memo.id)
+        }
+        DispatchQueue.main.async { self.objectWillChange.send() }
+    }
+    
+    func isMemoSelected(_ memo: Memo) -> Bool {
+        return selectedMemos.contains(memo.id)
+    }
+    
+    func clearMemoSelection() {
+        selectedMemos.removeAll()
+    }
+    
+    // MARK: - 選択されたメモを一括削除
+    func bulkDeleteSelectedMemos() {
+        let selectedMemosList = memos.filter { selectedMemos.contains($0.id) }
+        for memo in selectedMemosList {
+            deleteMemo(memo)
+        }
+        selectedMemos.removeAll()
+    }
+    
+    // MARK: - 選択されたメモを指定されたジャンルに移動
+    func moveSelectedMemosToGenre(_ genreName: String) {
+        let selectedMemosList = memos.filter { selectedMemos.contains($0.id) }
+        for memo in selectedMemosList {
+            updateMemoGenre(memo, genre: genreName)
+        }
+        selectedMemos.removeAll()
+    }
+    
+    // MARK: - メモのジャンルを更新
+    private func updateMemoGenre(_ memo: Memo, genre: String) {
+        if let index = memos.firstIndex(where: { $0.id == memo.id }) {
+            memos[index].genre = genre
+            saveMemos()
+        }
     }
 }
 
