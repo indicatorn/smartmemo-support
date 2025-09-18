@@ -1,6 +1,6 @@
 //
 //  MemoManager.swift
-//  Notification memo1
+//  ToDo通知
 //
 //  Created by 印出啓人 on 2025/09/06.
 //
@@ -32,6 +32,7 @@ class MemoManager: ObservableObject {
         loadMemos()
         loadGenres()
         requestNotificationPermission()
+        setupNotificationCategories()
     }
     
     // MARK: - データの永続化
@@ -61,6 +62,13 @@ class MemoManager: ObservableObject {
         if let data = userDefaults.data(forKey: genresKey),
            let decodedGenres = try? JSONDecoder().decode([Genre].self, from: data) {
             self.genres = decodedGenres
+            
+            // 既存データに「メモ」タグがない場合は追加
+            if !self.genres.contains(where: { $0.name == "メモ" }) {
+                let memoGenre = Genre(name: "メモ", isDefault: true)
+                self.genres.append(memoGenre)
+                saveGenres()
+            }
         } else {
             // 初回起動時はデフォルトジャンルを使用
             self.genres = Genre.defaultGenres
@@ -75,11 +83,12 @@ class MemoManager: ObservableObject {
     }
     
     // MARK: - メモの操作
-    func addMemo(title: String, notificationDate: Date? = nil, interval: NotificationInterval = .none, genre: String = "すべてのメモ") {
+    func addMemo(title: String, notificationDate: Date? = nil, interval: NotificationInterval = .none, snoozeInterval: SnoozeInterval = .none, genre: String = "すべてのメモ") {
         var newMemo = Memo(title: title, 
                           createdDate: Date(),
                           notificationDate: notificationDate,
-                          notificationInterval: interval)
+                          notificationInterval: interval,
+                          snoozeInterval: snoozeInterval)
         newMemo.genre = genre
         memos.append(newMemo)
         
@@ -90,11 +99,12 @@ class MemoManager: ObservableObject {
         saveMemos()
     }
     
-    func updateMemo(_ memo: Memo, title: String, notificationDate: Date? = nil, interval: NotificationInterval = .none, genre: String = "すべてのメモ") {
+    func updateMemo(_ memo: Memo, title: String, notificationDate: Date? = nil, interval: NotificationInterval = .none, snoozeInterval: SnoozeInterval = .none, genre: String = "すべてのメモ") {
         if let index = memos.firstIndex(where: { $0.id == memo.id }) {
             memos[index].title = title
             memos[index].notificationDate = notificationDate
             memos[index].notificationInterval = interval
+            memos[index].snoozeInterval = snoozeInterval
             memos[index].genre = genre
             
             // 既存の通知をキャンセルして新しい通知をスケジュール
@@ -190,6 +200,36 @@ class MemoManager: ObservableObject {
     }
     
     // MARK: - 通知機能
+    func setupNotificationCategories() {
+        // スヌーズアクションを作成
+        let snooze1Min = UNNotificationAction(identifier: "SNOOZE_1MIN", title: "1分後にスヌーズ", options: [])
+        let snooze5Min = UNNotificationAction(identifier: "SNOOZE_5MIN", title: "5分後にスヌーズ", options: [])
+        let snooze10Min = UNNotificationAction(identifier: "SNOOZE_10MIN", title: "10分後にスヌーズ", options: [])
+        let snooze30Min = UNNotificationAction(identifier: "SNOOZE_30MIN", title: "30分後にスヌーズ", options: [])
+        let snooze1Hour = UNNotificationAction(identifier: "SNOOZE_1HOUR", title: "1時間後にスヌーズ", options: [])
+        let stopSnoozeAction = UNNotificationAction(identifier: "STOP_SNOOZE", title: "スヌーズ停止", options: [.destructive])
+        let dismissAction = UNNotificationAction(identifier: "DISMISS", title: "閉じる", options: [.destructive])
+        
+        // スヌーズカテゴリを作成
+        let snoozeCategory = UNNotificationCategory(
+            identifier: "SNOOZE_CATEGORY",
+            actions: [snooze1Min, snooze5Min, snooze10Min, snooze30Min, snooze1Hour, stopSnoozeAction, dismissAction],
+            intentIdentifiers: [],
+            options: []
+        )
+        
+        // スヌーズ停止カテゴリを作成（自動スヌーズ用）
+        let snoozeStopCategory = UNNotificationCategory(
+            identifier: "SNOOZE_STOP_CATEGORY",
+            actions: [stopSnoozeAction, dismissAction],
+            intentIdentifiers: [],
+            options: []
+        )
+        
+        // カテゴリを登録
+        UNUserNotificationCenter.current().setNotificationCategories([snoozeCategory, snoozeStopCategory])
+    }
+    
     func requestNotificationPermission() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             if granted {
@@ -203,13 +243,34 @@ class MemoManager: ObservableObject {
     func scheduleNotification(for memo: Memo) {
         guard let notificationDate = memo.notificationDate else { return }
         
+        // 初回通知をスケジュール
+        scheduleInitialNotification(for: memo, at: notificationDate)
+        
+        // スヌーズ間隔が設定されている場合、スヌーズ通知もスケジュール
+        if let snoozeInterval = memo.snoozeInterval.timeInterval, memo.snoozeInterval != .none {
+            let snoozeDate = notificationDate.addingTimeInterval(snoozeInterval)
+            scheduleSnoozeNotification(for: memo, at: snoozeDate, snoozeCount: 1)
+        }
+        
+        // 繰り返し通知の設定
+        if let interval = memo.notificationInterval.timeInterval, memo.notificationInterval != .none {
+            scheduleRepeatingNotification(for: memo, interval: interval)
+        }
+    }
+    
+    private func scheduleInitialNotification(for memo: Memo, at date: Date) {
         let content = UNMutableNotificationContent()
-        content.title = "リマインダー"
+        content.title = "ToDo通知"
         content.body = memo.title
         content.sound = .default
         
+        // スヌーズが「なし」のメモのみにスヌーズボタンを追加
+        if memo.snoozeInterval == .none {
+            content.categoryIdentifier = "SNOOZE_CATEGORY"
+        }
+        
         let calendar = Calendar.current
-        let dateComponents = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: notificationDate)
+        let dateComponents = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: date)
         
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
         let request = UNNotificationRequest(identifier: memo.id.uuidString, content: content, trigger: trigger)
@@ -221,18 +282,35 @@ class MemoManager: ObservableObject {
                 print("通知をスケジュールしました: \(memo.title)")
             }
         }
-        
-        // 繰り返し通知の設定
-        if let interval = memo.notificationInterval.timeInterval, memo.notificationInterval != .none {
-            scheduleRepeatingNotification(for: memo, interval: interval)
-        }
+    }
+    
+    // 月末日を自動調整する関数
+    private func getLastDayOfMonth(for date: Date) -> Date {
+        let calendar = Calendar.current
+        let nextMonth = calendar.date(byAdding: .month, value: 1, to: date)!
+        let lastDayOfMonth = calendar.date(byAdding: .day, value: -1, to: nextMonth)!
+        return lastDayOfMonth
+    }
+    
+    // 日付が月末日かどうかをチェックする関数
+    private func isLastDayOfMonth(_ date: Date) -> Bool {
+        let calendar = Calendar.current
+        let day = calendar.component(.day, from: date)
+        let lastDay = calendar.range(of: .day, in: .month, for: date)?.upperBound ?? 32
+        return day == lastDay - 1
     }
     
     private func scheduleRepeatingNotification(for memo: Memo, interval: TimeInterval) {
         guard let notificationDate = memo.notificationDate else { return }
         
+        // 毎月の場合は特別な処理
+        if memo.notificationInterval == .monthly {
+            scheduleMonthlyNotification(for: memo, at: notificationDate)
+            return
+        }
+        
         let content = UNMutableNotificationContent()
-        content.title = "定期リマインダー"
+        content.title = "ToDo通知"
         content.body = memo.title
         content.sound = .default
         
@@ -242,8 +320,119 @@ class MemoManager: ObservableObject {
         UNUserNotificationCenter.current().add(request)
     }
     
+    // 毎月の通知をスケジュール（月末日調整付き）
+    private func scheduleMonthlyNotification(for memo: Memo, at date: Date) {
+        let calendar = Calendar.current
+        let originalDay = calendar.component(.day, from: date)
+        let originalHour = calendar.component(.hour, from: date)
+        let originalMinute = calendar.component(.minute, from: date)
+        
+        // 12ヶ月分の通知をスケジュール
+        for monthOffset in 1...12 {
+            guard let targetDate = calendar.date(byAdding: .month, value: monthOffset, to: date) else { continue }
+            
+            var finalDate = targetDate
+            
+            // 31日設定で月末日を超える場合は月末日に調整
+            if originalDay == 31 {
+                let lastDayOfMonth = getLastDayOfMonth(for: targetDate)
+                let lastDay = calendar.component(.day, from: lastDayOfMonth)
+                if lastDay < 31 {
+                    // 月末日に調整
+                    finalDate = lastDayOfMonth
+                }
+            }
+            
+            // 時刻を設定
+            finalDate = calendar.date(bySettingHour: originalHour, minute: originalMinute, second: 0, of: finalDate) ?? finalDate
+            
+            let content = UNMutableNotificationContent()
+            content.title = "ToDo通知"
+            content.body = memo.title
+            content.sound = .default
+            
+            let dateComponents = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: finalDate)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+            let request = UNNotificationRequest(identifier: "\(memo.id.uuidString)_monthly_\(monthOffset)", content: content, trigger: trigger)
+            
+            UNUserNotificationCenter.current().add(request)
+        }
+    }
+    
     func cancelNotification(for memo: Memo) {
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [memo.id.uuidString, "\(memo.id.uuidString)_repeat"])
+        // 基本の通知ID
+        var identifiers = [memo.id.uuidString, "\(memo.id.uuidString)_repeat"]
+        
+        // 毎月の通知IDを追加
+        for i in 1...12 {
+            identifiers.append("\(memo.id.uuidString)_monthly_\(i)")
+        }
+        
+        // スヌーズ通知IDを追加
+        for i in 1...100 {
+            identifiers.append("\(memo.id.uuidString)_snooze_\(i)")
+        }
+        
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers)
+    }
+    
+    private func scheduleSnoozeNotification(for memo: Memo, at date: Date, snoozeCount: Int) {
+        // 上限100回まで
+        guard snoozeCount <= 100 else { return }
+        
+        let content = UNMutableNotificationContent()
+        content.title = "ToDo通知 - スヌーズ (\(snoozeCount)/100回目)"
+        content.body = memo.title
+        content.sound = .default
+        
+        // スヌーズ停止ボタンを追加
+        content.categoryIdentifier = "SNOOZE_STOP_CATEGORY"
+        
+        // ユーザー情報にスヌーズ回数とメモIDを保存
+        content.userInfo = [
+            "memoId": memo.id.uuidString,
+            "snoozeCount": snoozeCount
+        ]
+        
+        let calendar = Calendar.current
+        let dateComponents = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: date)
+        
+        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+        let request = UNNotificationRequest(identifier: "\(memo.id.uuidString)_snooze_\(snoozeCount)", content: content, trigger: trigger)
+        
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("スヌーズ通知のスケジュールに失敗しました: \(error)")
+            } else {
+                print("スヌーズ通知をスケジュールしました: \(memo.title) at \(date) (\(snoozeCount)回目)")
+            }
+        }
+    }
+    
+    // 次のスヌーズ通知をスケジュール（外部から呼び出し可能）
+    func scheduleNextSnoozeNotification(for memo: Memo, at date: Date, currentSnoozeCount: Int) {
+        let nextSnoozeCount = currentSnoozeCount + 1
+        scheduleSnoozeNotification(for: memo, at: date, snoozeCount: nextSnoozeCount)
+    }
+    
+    // スヌーズアクション処理
+    func handleSnoozeAction(for memoId: UUID, snoozeInterval: SnoozeInterval) {
+        guard let memo = memos.first(where: { $0.id == memoId }) else { return }
+        
+        // 現在の時刻からスヌーズ間隔を加算
+        let snoozeDate = Date().addingTimeInterval(snoozeInterval.timeInterval ?? 0)
+        
+        // スヌーズ通知をスケジュール
+        scheduleSnoozeNotification(for: memo, at: snoozeDate, snoozeCount: 1)
+    }
+    
+    // スヌーズ停止処理
+    func stopSnooze(for memoId: UUID) {
+        // 該当メモのすべてのスヌーズ通知をキャンセル
+        let identifiers = (1...100).map { "\(memoId.uuidString)_snooze_\($0)" }
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers)
+        
+        print("スヌーズを停止しました: \(memoId)")
     }
     
     // MARK: - ジャンル管理

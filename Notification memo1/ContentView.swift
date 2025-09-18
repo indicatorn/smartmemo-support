@@ -1,6 +1,6 @@
 //
 //  ContentView.swift
-//  Notification memo1
+//  ToDo通知
 //
 //  Created by 印出啓人 on 2025/09/06.
 //
@@ -106,7 +106,7 @@ struct ContentView: View {
             }) {
                 Image(systemName: "line.horizontal.3")
                     .font(.title2)
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
             }
             
             Spacer()
@@ -114,7 +114,7 @@ struct ContentView: View {
             Text(memoManager.showingDeletedItems ? "削除済み" : memoManager.selectedGenre)
                 .font(.title)
                 .fontWeight(.bold)
-                .foregroundColor(.white)
+                .foregroundColor(.black)
             
             Spacer()
             
@@ -126,7 +126,7 @@ struct ContentView: View {
                     }) {
                         Text(isDeletedEditMode ? "完了" : "編集")
                             .font(.system(size: 16))
-                            .foregroundColor(.white)
+                            .foregroundColor(Color.black)
                     }
                 } else {
                     // 選択ありの時は透明なボタンでスペースを確保
@@ -151,13 +151,13 @@ struct ContentView: View {
                 }) {
                     Text(isEditMode ? "完了" : "編集")
                         .font(.system(size: 16))
-                        .foregroundColor(.white)
+                        .foregroundColor(Color.black)
                 }
             }
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 15)
-        .background(Color(red: 0.4, green: 0.8, blue: 0.6))
+        .background(Color(red: 0.302, green: 0.8, blue: 0.416))
     }
     
     // MARK: - 新しいメモを作成ボタン
@@ -173,16 +173,16 @@ struct ContentView: View {
         }) {
             HStack {
                 Spacer()
-                Text("新しいメモを作成")
+                Text("新規メモ作成")
                     .font(.system(size: 18))
-                    .foregroundColor(Color(red: 0.4, green: 0.8, blue: 0.6))
+                    .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
                 Spacer()
             }
             .padding(.vertical, 20)
             .background(Color.white)
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color(red: 0.4, green: 0.8, blue: 0.6), lineWidth: 2)
+                    .stroke(Color(red: 0.302, green: 0.8, blue: 0.416), lineWidth: 2)
             )
         }
         .padding(.horizontal, 16)
@@ -203,6 +203,7 @@ struct ContentView: View {
                 }
                 .listStyle(PlainListStyle())
                 .background(Color(red: 0.95, green: 0.95, blue: 0.95))
+                .padding(.top, 8)
             } else {
                 List {
                     ForEach(memoManager.sortedMemos, id: \.id) { memo in
@@ -223,6 +224,7 @@ struct ContentView: View {
                 }
                 .listStyle(PlainListStyle())
                 .background(Color(red: 0.95, green: 0.95, blue: 0.95))
+                .padding(.top, 8)
             }
         }
     }
@@ -254,7 +256,7 @@ struct ContentView: View {
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 16)
-        .background(Color.gray.opacity(0.2))
+        .background(Color.gray.opacity(0.1))
         .padding(.bottom, 20)
     }
     
@@ -266,7 +268,7 @@ struct ContentView: View {
             }) {
                 Text("復元")
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(.white)
+                    .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
             }
             
             Spacer()
@@ -284,7 +286,7 @@ struct ContentView: View {
             }) {
                 Text("全て選択")
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(.white)
+                    .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
             }
             
             Spacer()
@@ -294,12 +296,12 @@ struct ContentView: View {
             }) {
                 Text("削除")
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(.white)
+                    .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
             }
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 16)
-        .background(Color.gray.opacity(0.2))
+        .background(Color.gray.opacity(0.1))
         .padding(.bottom, 20)
     }
     
@@ -311,7 +313,7 @@ struct ContentView: View {
             }) {
                 Text("移動")
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(.white)
+                    .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
             }
             
             Spacer()
@@ -329,7 +331,7 @@ struct ContentView: View {
             }) {
                 Text("全て選択")
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(.white)
+                    .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
             }
             
             Spacer()
@@ -340,12 +342,12 @@ struct ContentView: View {
             }) {
                 Text("削除")
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(.white)
+                    .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
             }
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 16)
-        .background(Color.gray.opacity(0.2))
+        .background(Color.gray.opacity(0.1))
         .padding(.bottom, 20)
     }
     
@@ -379,7 +381,7 @@ struct MemoRowView: View {
                         // 選択状態の表示
                         if memoManager.isMemoSelected(memo) {
                             Circle()
-                                .fill(Color(red: 0.4, green: 0.8, blue: 0.6))
+                                .fill(Color(red: 0.302, green: 0.8, blue: 0.416))
                                 .frame(width: 16, height: 16)
                         }
                     }
@@ -393,7 +395,7 @@ struct MemoRowView: View {
             if isEditMode {
                 Image(systemName: "line.horizontal.3")
                     .font(.system(size: 18))
-                    .foregroundColor(.gray)
+                    .foregroundColor(Color.gray)
                     .frame(width: 24, height: 24)
             }
             
@@ -403,13 +405,14 @@ struct MemoRowView: View {
                 HStack {
                     Text(memo.title)
                         .font(.system(size: 16))
-                        .foregroundColor(.black)
+                        .foregroundColor(Color.black)
                     
                     // ジャンル名表示（すべてのメモ表示時または削除済み表示時、メモ本文の1番右に配置）
-                    if (memoManager.selectedGenre == "すべてのメモ" || memoManager.showingDeletedItems) && memo.genre != "すべてのメモ" {
-                        Text(memo.genre)
+                    // 「メモ」タグは非表示にする
+                    if (memoManager.selectedGenre == "すべてのメモ" || memoManager.showingDeletedItems) && memo.genre != "すべてのメモ" && memo.genre != "メモ" {
+                        Text(memo.genre.isEmpty ? "タグなし" : memo.genre)
                             .font(.system(size: 12))
-                            .foregroundColor(.gray)
+                            .foregroundColor(Color.gray)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 2)
                             .background(Color.gray.opacity(0.1))
@@ -420,19 +423,34 @@ struct MemoRowView: View {
                 HStack {
                     Text(memo.formattedDate)
                         .font(.system(size: 14))
-                        .foregroundColor(Color(red: 0.4, green: 0.8, blue: 0.6))
+                        .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
                     
                     Spacer()
                     
                     // 通知頻度タグ
-                    if memo.notificationInterval != .none {
-                        HStack(spacing: 4) {
-                            Image(systemName: "bell")
-                                .font(.system(size: 12))
-                                .foregroundColor(Color(red: 0.4, green: 0.8, blue: 0.6))
-                            Text(memo.notificationInterval.rawValue)
-                                .font(.system(size: 12))
-                                .foregroundColor(Color(red: 0.4, green: 0.8, blue: 0.6))
+                    HStack(spacing: 8) {
+                        // 繰り返し設定
+                        if memo.notificationInterval != .none {
+                            HStack(spacing: 4) {
+                                Image(systemName: "bell")
+                                    .font(.system(size: 12))
+                                    .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
+                                Text(memo.notificationInterval.rawValue)
+                                    .font(.system(size: 12))
+                                    .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
+                            }
+                        }
+                        
+                        // スヌーズ設定
+                        if memo.snoozeInterval != .none {
+                            HStack(spacing: 4) {
+                                Image(systemName: "clock.arrow.circlepath")
+                                    .font(.system(size: 12))
+                                    .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
+                                Text(memo.snoozeInterval.rawValue)
+                                    .font(.system(size: 12))
+                                    .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
+                            }
                         }
                     }
                 }
@@ -447,7 +465,7 @@ struct MemoRowView: View {
                 }) {
                     Image(systemName: "minus.circle.fill")
                         .font(.system(size: 24))
-                        .foregroundColor(.red)
+                        .foregroundColor(Color.black)
                 }
                 .buttonStyle(PlainButtonStyle())
             }
@@ -465,7 +483,7 @@ struct MemoRowView: View {
                 Button("削除") {
                     memoManager.deleteMemo(memo)
                 }
-                .tint(.red)
+                .tint(.black)
             }
         }
     }
@@ -490,7 +508,7 @@ struct DeletedMemoRowView: View {
                     // 選択状態の表示（通常モードと同じ仕様）
                     if memoManager.isDeletedMemoSelected(memo) {
                         Circle()
-                            .fill(Color(red: 0.4, green: 0.8, blue: 0.6))
+                            .fill(Color(red: 0.302, green: 0.8, blue: 0.416))
                             .frame(width: 16, height: 16)
                             .onAppear {
                                 print("選択状態の円を表示: \(memo.title)")
@@ -510,13 +528,14 @@ struct DeletedMemoRowView: View {
                 HStack {
                     Text(memo.title)
                         .font(.system(size: 16))
-                        .foregroundColor(.black)
+                        .foregroundColor(Color.black)
                     
                     // ジャンル名表示（削除済み表示時、メモ本文の1番右に配置）
-                    if (memoManager.selectedGenre == "すべてのメモ" || memoManager.showingDeletedItems) && memo.genre != "すべてのメモ" {
-                        Text(memo.genre)
+                    // 「メモ」タグは非表示にする
+                    if (memoManager.selectedGenre == "すべてのメモ" || memoManager.showingDeletedItems) && memo.genre != "すべてのメモ" && memo.genre != "メモ" {
+                        Text(memo.genre.isEmpty ? "タグなし" : memo.genre)
                             .font(.system(size: 12))
-                            .foregroundColor(.gray)
+                            .foregroundColor(Color.gray)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 2)
                             .background(Color.gray.opacity(0.1))
@@ -526,7 +545,7 @@ struct DeletedMemoRowView: View {
                 
                 Text(memo.formattedDate)
                     .font(.system(size: 14))
-                    .foregroundColor(Color(red: 0.4, green: 0.8, blue: 0.6))
+                    .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
             }
             
             Spacer()
@@ -538,7 +557,7 @@ struct DeletedMemoRowView: View {
                 let isSelected = memoManager.isDeletedMemoSelected(memo)
                 print("背景色設定: \(memo.title) - 選択状態: \(isSelected)")
                 return isSelected ? 
-                    Color(red: 0.4, green: 0.8, blue: 0.6).opacity(0.1) : 
+                    Color(red: 0.302, green: 0.8, blue: 0.416).opacity(0.1) : 
                     Color.white.opacity(0.8)
             }
         )
@@ -555,12 +574,12 @@ struct DeletedMemoRowView: View {
             Button("復元") {
                 memoManager.restoreMemo(memo)
             }
-            .tint(.green)
+            .tint(Color(red: 0.302, green: 0.8, blue: 0.416))
             
             Button("削除") {
                 memoManager.permanentlyDelete(memo)
             }
-            .tint(.red)
+            .tint(Color(red: 0.302, green: 0.8, blue: 0.416))
         }
     }
 }
@@ -573,34 +592,16 @@ struct GenreSelectionView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach(memoManager.genres.filter { !$0.isDefault || $0.name == "すべてのメモ" }) { genre in
-                    Button(action: {
-                        // 選択されたメモを指定されたジャンルに移動
-                        memoManager.moveSelectedMemosToGenre(genre.name)
-                        showingGenreSelection = false
-                    }) {
-                        HStack {
-                            Image(systemName: genreIcon(for: genre.name))
-                                .foregroundColor(Color(red: 0.4, green: 0.8, blue: 0.6))
-                                .frame(width: 24)
-                            
-                            Text(genre.name)
-                                .foregroundColor(.primary)
-                            
-                            Spacer()
-                            
-                            // 選択中のメモ数を表示
-                            Text("\(memoManager.selectedMemos.count)個")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 2)
-                                .background(Color.gray.opacity(0.2))
-                                .cornerRadius(4)
-                        }
-                        .padding(.vertical, 4)
-                    }
-                    .buttonStyle(PlainButtonStyle())
+                // メモ（最初に表示）
+                if let memoGenre = memoManager.genres.first(where: { $0.name == "メモ" }) {
+                    genreSelectionRow(for: memoGenre)
+                }
+                
+                // ユーザーが作成したジャンル（メモ以外のデフォルトでないジャンル）
+                ForEach(memoManager.genres.filter { genre in
+                    !genre.isDefault && genre.name != "メモ"
+                }) { genre in
+                    genreSelectionRow(for: genre)
                 }
             }
             .navigationTitle("ジャンルを選択")
@@ -613,15 +614,72 @@ struct GenreSelectionView: View {
         }
     }
     
+    // MARK: - ジャンル選択行ビュー
+    private func genreSelectionRow(for genre: Genre) -> some View {
+        Button(action: {
+            // 選択されたメモを指定されたジャンルに移動
+            memoManager.moveSelectedMemosToGenre(genre.name)
+            showingGenreSelection = false
+        }) {
+            HStack {
+                Image(systemName: genreIcon(for: genre.name))
+                    .foregroundColor(Color.black)
+                    .frame(width: 24)
+                
+                Text(genre.name)
+                    .foregroundColor(Color.black)
+                
+                Spacer()
+            }
+            .padding(.vertical, 4)
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+    
     private func genreIcon(for genreName: String) -> String {
         switch genreName {
-        case "すべてのメモ": return "doc.text"
-        case "買い物": return "cart"
-        case "仕事": return "briefcase"
-        case "プライベート": return "person"
-        case "勉強": return "book"
-        case "その他": return "folder"
-        default: return "folder"
+        case "すべてのメモ":
+            return "doc.text"
+        case "買い物":
+            return "cart"
+        case "仕事":
+            return "briefcase"
+        case "プライベート":
+            return "person"
+        case "勉強", "学習":
+            return "book"
+        case "健康", "フィットネス":
+            return "heart"
+        case "旅行":
+            return "airplane"
+        case "家事":
+            return "house"
+        case "趣味":
+            return "star"
+        case "家族":
+            return "person.2"
+        case "友達":
+            return "person.3"
+        case "医療", "病院":
+            return "cross.case"
+        case "会議":
+            return "person.2.square.stack"
+        case "プロジェクト":
+            return "folder.badge.gearshape"
+        case "アイデア":
+            return "lightbulb"
+        case "目標":
+            return "target"
+        case "メモ", "メモリー":
+            return "note.text"
+        case "リスト":
+            return "list.bullet"
+        case "スケジュール":
+            return "calendar"
+        case "タスク":
+            return "checkmark.circle"
+        default:
+            return "folder"
         }
     }
 }

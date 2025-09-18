@@ -1,6 +1,6 @@
 //
 //  SideMenuView.swift
-//  Notification memo1
+//  ToDo通知
 //
 //  Created by 印出啓人 on 2025/09/06.
 //
@@ -41,7 +41,7 @@ struct SideMenuView: View {
                 Text("メニュー")
                     .font(.title2)
                     .fontWeight(.bold)
-                    .foregroundColor(.black)
+                    .foregroundColor(Color.black)
                 
                 Spacer()
                 
@@ -52,13 +52,13 @@ struct SideMenuView: View {
                 }) {
                     Image(systemName: "xmark")
                         .font(.system(size: 18))
-                        .foregroundColor(.gray)
+                        .foregroundColor(Color.gray)
                 }
             }
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 20)
-        .background(Color.white)
+        .background(Color(red: 0.95, green: 0.95, blue: 0.95))
     }
     
     // MARK: - 削除済み項目セクション
@@ -73,12 +73,12 @@ struct SideMenuView: View {
                 HStack(spacing: 12) {
                     Image(systemName: "trash")
                         .font(.system(size: 18))
-                        .foregroundColor(.red)
+                        .foregroundColor(Color.black)
                         .frame(width: 24, height: 24)
                     
                     Text("削除済み")
                         .font(.system(size: 16))
-                        .foregroundColor(.black)
+                        .foregroundColor(Color.black)
                     
                     Spacer()
                     
@@ -98,7 +98,7 @@ struct SideMenuView: View {
                 }
                 .padding(.horizontal, 20)
                 .padding(.vertical, 12)
-                .background(memoManager.showingDeletedItems ? Color(red: 0.4, green: 0.8, blue: 0.6).opacity(0.1) : Color.clear)
+                .background(memoManager.showingDeletedItems ? Color(red: 0.302, green: 0.8, blue: 0.416).opacity(0.1) : Color.clear)
             }
             
             Divider()
@@ -124,68 +124,24 @@ struct SideMenuView: View {
                 }) {
                     Image(systemName: "plus.circle.fill")
                         .font(.system(size: 16))
-                        .foregroundColor(Color(red: 0.4, green: 0.8, blue: 0.6))
+                        .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
                 }
             }
             .padding(.horizontal, 20)
             .padding(.top, 16)
             .padding(.bottom, 8)
             
-            // ジャンルリスト
-            ForEach(memoManager.genres) { genre in
-                HStack(spacing: 12) {
-                    // ジャンル選択ボタン
-                    Button(action: {
-                        memoManager.selectGenre(genre.name)
-                        withAnimation(.easeInOut(duration: 0.3)) {
-                            isShowing = false
-                        }
-                    }) {
-                        HStack(spacing: 12) {
-                            Image(systemName: genreIcon(for: genre.name))
-                                .font(.system(size: 18))
-                                .foregroundColor(Color(red: 0.4, green: 0.8, blue: 0.6))
-                                .frame(width: 24, height: 24)
-                            
-                            Text(genre.name)
-                                .font(.system(size: 16))
-                                .foregroundColor(.black)
-                            
-                            Spacer()
-                            
-                            let count = memoManager.memos.filter { !$0.isDeleted && (genre.name == "すべてのメモ" || $0.genre == genre.name) }.count
-                            if count > 0 {
-                                Text("\(count)")
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.gray)
-                            }
-                        }
-                        .padding(.horizontal, 20)
-                        .padding(.vertical, 12)
-                        .background(memoManager.selectedGenre == genre.name && !memoManager.showingDeletedItems ? Color(red: 0.4, green: 0.8, blue: 0.6).opacity(0.1) : Color.clear)
-                    }
-                    
-                    // 編集・削除ボタン（デフォルトジャンル以外）
-                    if !genre.isDefault {
-                        Menu {
-                            Button("編集") {
-                                editingGenre = genre
-                                editingGenreName = genre.name
-                                showingEditGenreAlert = true
-                            }
-                            
-                            Button("削除", role: .destructive) {
-                                memoManager.deleteGenre(genre)
-                            }
-                        } label: {
-                            Image(systemName: "ellipsis")
-                                .font(.system(size: 14))
-                                .foregroundColor(.gray)
-                                .frame(width: 24, height: 24)
-                        }
-                        .padding(.trailing, 16)
-                    }
-                }
+            // すべてのメモ
+            if let allMemosGenre = memoManager.genres.first(where: { $0.name == "すべてのメモ" }) {
+                genreRowView(for: allMemosGenre)
+            }
+            
+            // メモシート（すべてのメモの直下）
+            memoSheetRowView
+            
+            // その他のジャンル（ユーザーが作成したもの）
+            ForEach(memoManager.genres.filter { $0.name != "すべてのメモ" && $0.name != "メモ" }) { genre in
+                genreRowView(for: genre)
             }
         }
         .alert("新しいジャンルを追加", isPresented: $showingAddGenreAlert) {
@@ -206,6 +162,96 @@ struct SideMenuView: View {
                 }
             }
             Button("キャンセル", role: .cancel) { }
+        }
+    }
+    
+    // MARK: - ジャンル行ビュー
+    private func genreRowView(for genre: Genre) -> some View {
+        HStack(spacing: 12) {
+            // ジャンル選択ボタン
+            Button(action: {
+                memoManager.selectGenre(genre.name)
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    isShowing = false
+                }
+            }) {
+                HStack(spacing: 12) {
+                    Image(systemName: genreIcon(for: genre.name))
+                        .font(.system(size: 18))
+                        .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
+                        .frame(width: 24, height: 24)
+                    
+                    Text(genre.name)
+                        .font(.system(size: 16))
+                        .foregroundColor(Color.black)
+                    
+                    Spacer()
+                    
+                    let count = memoManager.memos.filter { !$0.isDeleted && (genre.name == "すべてのメモ" || $0.genre == genre.name) }.count
+                    if count > 0 {
+                        Text("\(count)")
+                            .font(.system(size: 14))
+                            .foregroundColor(Color.gray)
+                    }
+                }
+                .padding(.horizontal, 20)
+                .padding(.vertical, 12)
+                .background(memoManager.selectedGenre == genre.name && !memoManager.showingDeletedItems ? Color(red: 0.302, green: 0.8, blue: 0.416).opacity(0.1) : Color.clear)
+            }
+            
+            // 編集・削除ボタン（デフォルトジャンル以外）
+            if !genre.isDefault {
+                Menu {
+                    Button("編集") {
+                        editingGenre = genre
+                        editingGenreName = genre.name
+                        showingEditGenreAlert = true
+                    }
+                    
+                    Button("削除", role: .destructive) {
+                        memoManager.deleteGenre(genre)
+                    }
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .font(.system(size: 14))
+                        .foregroundColor(Color.gray)
+                        .frame(width: 24, height: 24)
+                }
+                .padding(.trailing, 16)
+            }
+        }
+    }
+    
+    // MARK: - メモシート行ビュー
+    private var memoSheetRowView: some View {
+        Button(action: {
+            memoManager.selectGenre("メモ")
+            withAnimation(.easeInOut(duration: 0.3)) {
+                isShowing = false
+            }
+        }) {
+            HStack(spacing: 12) {
+                Image(systemName: "note.text")
+                    .font(.system(size: 18))
+                    .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
+                    .frame(width: 24, height: 24)
+                
+                Text("メモ")
+                    .font(.system(size: 16))
+                    .foregroundColor(Color.black)
+                
+                Spacer()
+                
+                let count = memoManager.memos.filter { !$0.isDeleted && $0.genre == "メモ" }.count
+                if count > 0 {
+                    Text("\(count)")
+                        .font(.system(size: 14))
+                        .foregroundColor(Color.gray)
+                }
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 12)
+            .background(memoManager.selectedGenre == "メモ" && !memoManager.showingDeletedItems ? Color(red: 0.302, green: 0.8, blue: 0.416).opacity(0.1) : Color.clear)
         }
     }
     
