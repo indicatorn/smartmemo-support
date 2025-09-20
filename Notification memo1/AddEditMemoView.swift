@@ -19,6 +19,7 @@ struct AddEditMemoView: View {
     @State private var notificationInterval: NotificationInterval = .none
     @State private var snoozeInterval: SnoozeInterval = .none
     @State private var selectedGenre: String = ""
+    @FocusState private var isTextFieldFocused: Bool
     
     init(memoManager: MemoManager, editingMemo: Memo? = nil) {
         self.memoManager = memoManager
@@ -79,7 +80,7 @@ struct AddEditMemoView: View {
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 15)
-        .background(Color(red: 0.302, green: 0.8, blue: 0.416))
+        .background(Color(red: 0.7, green: 0.85, blue: 1.0))
     }
     
     // MARK: - コンテンツビュー
@@ -91,25 +92,16 @@ struct AddEditMemoView: View {
                     .font(.headline)
                     .foregroundColor(Color.black)
                 
-                ZStack(alignment: .topLeading) {
-                    TextEditor(text: $title)
-                        .frame(minHeight: 80, maxHeight: 120)
-                        .font(.system(size: 16))
-                        .padding(8)
-                    
-                    if title.isEmpty {
-                        Text("メモを入力してください")
-                            .font(.system(size: 16))
-                            .foregroundColor(Color.gray)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 16)
-                            .allowsHitTesting(false)
-                    }
-                }
+                TextField("メモを入力してください", text: $title, axis: .vertical)
+                    .frame(minHeight: 80, maxHeight: 120)
+                    .font(.system(size: 16))
+                    .padding(8)
+                    .lineLimit(5...10)
+                    .focused($isTextFieldFocused)
                 .background(Color(red: 0.95, green: 0.95, blue: 0.95))
-                .cornerRadius(8)
+                .cornerRadius(12)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 8)
+                    RoundedRectangle(cornerRadius: 12)
                         .stroke(Color.gray.opacity(0.3), lineWidth: 1)
                 )
             }
@@ -119,7 +111,7 @@ struct AddEditMemoView: View {
                 Toggle("通知を設定", isOn: $hasNotification)
                     .font(.headline)
                     .foregroundColor(Color.black)
-                    .tint(Color(red: 0.302, green: 0.8, blue: 0.416))
+                    .tint(Color(red: 0.0, green: 0.478, blue: 1.0))
                 
                 if hasNotification {
                     VStack(spacing: 12) {
@@ -170,40 +162,50 @@ struct AddEditMemoView: View {
             }
             
             // ジャンル選択
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: 12) {
                 Text("ジャンル")
                     .font(.headline)
                     .foregroundColor(Color.black)
                 
-                Picker("ジャンル", selection: $selectedGenre) {
-                    // メモ（最初に表示）
-                    if let memoGenre = memoManager.genres.first(where: { $0.name == "メモ" }) {
-                        Text(memoGenre.name).tag(memoGenre.name)
+                VStack(alignment: .leading, spacing: 8) {
+                    Picker("ジャンル", selection: $selectedGenre) {
+                        // メモ（最初に表示）
+                        if let memoGenre = memoManager.genres.first(where: { $0.name == "メモ" }) {
+                            Text(memoGenre.name).tag(memoGenre.name)
+                        }
+                        
+                        // ユーザーが作成したジャンル（メモ以外のデフォルトでないジャンル）
+                        ForEach(memoManager.genres.filter { genre in
+                            !genre.isDefault && genre.name != "メモ"
+                        }, id: \.name) { genre in
+                            Text(genre.name.isEmpty ? "タグなし" : genre.name).tag(genre.name)
+                        }
                     }
-                    
-                    // ユーザーが作成したジャンル（メモ以外のデフォルトでないジャンル）
-                    ForEach(memoManager.genres.filter { genre in
-                        !genre.isDefault && genre.name != "メモ"
-                    }, id: \.name) { genre in
-                        Text(genre.name.isEmpty ? "タグなし" : genre.name).tag(genre.name)
-                    }
+                    .pickerStyle(MenuPickerStyle())
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 12)
+                    .background(Color(red: 0.95, green: 0.95, blue: 0.95))
+                    .cornerRadius(12)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                    )
                 }
-                .pickerStyle(MenuPickerStyle())
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .background(Color(red: 0.95, green: 0.95, blue: 0.95))
-                .cornerRadius(8)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-                )
             }
             
             Spacer()
         }
         .padding(.horizontal, 20)
         .padding(.top, 20)
+        .onAppear {
+            // 新規作成時のみ自動でフォーカス
+            if editingMemo == nil {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    isTextFieldFocused = true
+                }
+            }
+        }
     }
     
     // MARK: - 保存処理

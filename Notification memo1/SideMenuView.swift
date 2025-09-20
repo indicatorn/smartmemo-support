@@ -73,7 +73,7 @@ struct SideMenuView: View {
                 HStack(spacing: 12) {
                     Image(systemName: "trash")
                         .font(.system(size: 18))
-                        .foregroundColor(Color.black)
+                        .foregroundColor(Color(red: 0.0, green: 0.478, blue: 1.0))
                         .frame(width: 24, height: 24)
                     
                     Text("削除済み")
@@ -89,16 +89,12 @@ struct SideMenuView: View {
                     if deletedCount > 0 {
                         Text("\(deletedCount)")
                             .font(.system(size: 14))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 2)
-                            .background(Color.red)
-                            .clipShape(Capsule())
+                            .foregroundColor(Color.gray)
                     }
                 }
                 .padding(.horizontal, 20)
                 .padding(.vertical, 12)
-                .background(memoManager.showingDeletedItems ? Color(red: 0.302, green: 0.8, blue: 0.416).opacity(0.1) : Color.clear)
+                .background(memoManager.showingDeletedItems ? Color(red: 0.0, green: 0.478, blue: 1.0).opacity(0.1) : Color.clear)
             }
             
             Divider()
@@ -124,7 +120,7 @@ struct SideMenuView: View {
                 }) {
                     Image(systemName: "plus.circle.fill")
                         .font(.system(size: 16))
-                        .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
+                        .foregroundColor(Color(red: 0.0, green: 0.478, blue: 1.0))
                 }
             }
             .padding(.horizontal, 20)
@@ -178,7 +174,7 @@ struct SideMenuView: View {
                 HStack(spacing: 12) {
                     Image(systemName: genreIcon(for: genre.name))
                         .font(.system(size: 18))
-                        .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
+                        .foregroundColor(Color(red: 0.0, green: 0.478, blue: 1.0))
                         .frame(width: 24, height: 24)
                     
                     Text(genre.name)
@@ -196,7 +192,7 @@ struct SideMenuView: View {
                 }
                 .padding(.horizontal, 20)
                 .padding(.vertical, 12)
-                .background(memoManager.selectedGenre == genre.name && !memoManager.showingDeletedItems ? Color(red: 0.302, green: 0.8, blue: 0.416).opacity(0.1) : Color.clear)
+                .background(memoManager.selectedGenre == genre.name && !memoManager.showingDeletedItems ? Color(red: 0.0, green: 0.478, blue: 1.0).opacity(0.1) : Color.clear)
             }
             
             // 編集・削除ボタン（デフォルトジャンル以外）
@@ -233,7 +229,7 @@ struct SideMenuView: View {
             HStack(spacing: 12) {
                 Image(systemName: "note.text")
                     .font(.system(size: 18))
-                    .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
+                    .foregroundColor(Color(red: 0.0, green: 0.478, blue: 1.0))
                     .frame(width: 24, height: 24)
                 
                 Text("メモ")
@@ -251,7 +247,7 @@ struct SideMenuView: View {
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 12)
-            .background(memoManager.selectedGenre == "メモ" && !memoManager.showingDeletedItems ? Color(red: 0.302, green: 0.8, blue: 0.416).opacity(0.1) : Color.clear)
+            .background(memoManager.selectedGenre == "メモ" && !memoManager.showingDeletedItems ? Color(red: 0.0, green: 0.478, blue: 1.0).opacity(0.1) : Color.clear)
         }
     }
     
