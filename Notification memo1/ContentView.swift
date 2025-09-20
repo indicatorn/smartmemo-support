@@ -169,7 +169,7 @@ struct ContentView: View {
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 15)
-        .background(Color(red: 0.302, green: 0.8, blue: 0.416))
+        .background(Color(red: 0.7, green: 0.85, blue: 1.0))
     }
     
     // MARK: - フローティングアクションボタン（新規メモ作成）
@@ -187,7 +187,7 @@ struct ContentView: View {
                 .font(.system(size: 28, weight: .medium))
                 .foregroundColor(.white)
                 .frame(width: 64, height: 64)
-                .background(Color(red: 0.302, green: 0.8, blue: 0.416))
+                .background(Color(red: 0.0, green: 0.478, blue: 1.0))
                 .clipShape(Circle())
                 .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
         }
@@ -290,7 +290,7 @@ struct ContentView: View {
             }) {
                 Text("全て復元")
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(.white)
+                    .foregroundColor(.green)
             }
             
             Spacer()
@@ -302,7 +302,7 @@ struct ContentView: View {
             }) {
                 Text("全て削除")
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(.white)
+                    .foregroundColor(.red)
             }
         }
         .padding(.horizontal, 16)
@@ -319,7 +319,7 @@ struct ContentView: View {
             }) {
                 Text("復元")
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
+                    .foregroundColor(.green)
             }
             
             Spacer()
@@ -337,7 +337,7 @@ struct ContentView: View {
             }) {
                 Text("全て選択")
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
+                    .foregroundColor(Color(red: 0.0, green: 0.478, blue: 1.0))
             }
             
             Spacer()
@@ -347,7 +347,7 @@ struct ContentView: View {
             }) {
                 Text("削除")
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
+                    .foregroundColor(.red)
             }
         }
         .padding(.horizontal, 16)
@@ -364,7 +364,7 @@ struct ContentView: View {
             }) {
                 Text("移動")
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
+                    .foregroundColor(.purple)
             }
             
             Spacer()
@@ -382,7 +382,7 @@ struct ContentView: View {
             }) {
                 Text("全て選択")
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
+                    .foregroundColor(Color(red: 0.0, green: 0.478, blue: 1.0))
             }
             
             Spacer()
@@ -393,7 +393,7 @@ struct ContentView: View {
             }) {
                 Text("削除")
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
+                    .foregroundColor(.red)
             }
         }
         .padding(.horizontal, 16)
@@ -432,7 +432,7 @@ struct MemoRowView: View {
                         // 選択状態の表示
                         if memoManager.isMemoSelected(memo) {
                             Circle()
-                                .fill(Color(red: 0.302, green: 0.8, blue: 0.416))
+                                .fill(Color(red: 0.0, green: 0.478, blue: 1.0))
                                 .frame(width: 16, height: 16)
                         }
                     }
@@ -474,7 +474,7 @@ struct MemoRowView: View {
                 HStack {
                     Text(memo.formattedDate)
                         .font(.system(size: 14))
-                        .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
+                        .foregroundColor(Color(red: 0.0, green: 0.478, blue: 1.0))
                     
                     Spacer()
                     
@@ -485,10 +485,10 @@ struct MemoRowView: View {
                             HStack(spacing: 4) {
                                 Image(systemName: "bell")
                                     .font(.system(size: 12))
-                                    .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
+                                    .foregroundColor(Color(red: 0.0, green: 0.478, blue: 1.0))
                                 Text(memo.notificationInterval.rawValue)
                                     .font(.system(size: 12))
-                                    .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
+                                    .foregroundColor(Color(red: 0.0, green: 0.478, blue: 1.0))
                             }
                         }
                         
@@ -497,10 +497,10 @@ struct MemoRowView: View {
                             HStack(spacing: 4) {
                                 Image(systemName: "clock.arrow.circlepath")
                                     .font(.system(size: 12))
-                                    .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
+                                    .foregroundColor(Color(red: 0.0, green: 0.478, blue: 1.0))
                                 Text(memo.snoozeInterval.rawValue)
                                     .font(.system(size: 12))
-                                    .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
+                                    .foregroundColor(Color(red: 0.0, green: 0.478, blue: 1.0))
                             }
                         }
                     }
@@ -516,13 +516,20 @@ struct MemoRowView: View {
                 }) {
                     Image(systemName: "minus.circle.fill")
                         .font(.system(size: 24))
-                        .foregroundColor(Color.black)
+                        .foregroundColor(.red)
                 }
                 .buttonStyle(PlainButtonStyle())
             }
         }
         .padding(.vertical, 12)
-        .background(Color.white)
+        .background(
+            Group {
+                let isSelected = memoManager.isMemoSelected(memo)
+                return isSelected ? 
+                    Color(red: 0.0, green: 0.478, blue: 1.0).opacity(0.1) : 
+                    Color.white
+            }
+        )
         .cornerRadius(8)
         .onTapGesture {
             if !isEditMode {
@@ -534,7 +541,7 @@ struct MemoRowView: View {
                 Button("削除") {
                     memoManager.deleteMemo(memo)
                 }
-                .tint(.black)
+                .tint(.red)
             }
         }
     }
@@ -559,7 +566,7 @@ struct DeletedMemoRowView: View {
                     // 選択状態の表示（通常モードと同じ仕様）
                     if memoManager.isDeletedMemoSelected(memo) {
                         Circle()
-                            .fill(Color(red: 0.302, green: 0.8, blue: 0.416))
+                            .fill(Color(red: 0.0, green: 0.478, blue: 1.0))
                             .frame(width: 16, height: 16)
                             .onAppear {
                                 print("選択状態の円を表示: \(memo.title)")
@@ -596,7 +603,7 @@ struct DeletedMemoRowView: View {
                 
                 Text(memo.formattedDate)
                     .font(.system(size: 14))
-                    .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
+                    .foregroundColor(Color(red: 0.0, green: 0.478, blue: 1.0))
             }
             
             Spacer()
@@ -608,7 +615,7 @@ struct DeletedMemoRowView: View {
                 let isSelected = memoManager.isDeletedMemoSelected(memo)
                 print("背景色設定: \(memo.title) - 選択状態: \(isSelected)")
                 return isSelected ? 
-                    Color(red: 0.302, green: 0.8, blue: 0.416).opacity(0.1) : 
+                    Color(red: 0.0, green: 0.478, blue: 1.0).opacity(0.1) : 
                     Color.white.opacity(0.8)
             }
         )
@@ -625,12 +632,12 @@ struct DeletedMemoRowView: View {
             Button("復元") {
                 memoManager.restoreMemo(memo)
             }
-            .tint(Color(red: 0.302, green: 0.8, blue: 0.416))
+            .tint(.green)
             
             Button("削除") {
                 memoManager.permanentlyDelete(memo)
             }
-            .tint(Color(red: 0.302, green: 0.8, blue: 0.416))
+            .tint(.red)
         }
     }
 }
