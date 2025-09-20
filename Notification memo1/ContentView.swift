@@ -24,26 +24,10 @@ struct ContentView: View {
                     // ヘッダー
                     headerView
                     
-                    // 新しいメモを作成ボタン
-                    addMemoButton
-                    
                     // メモリスト
                     memoListView
                     
-                    // 削除済み編集モード用のボタン
-                    if memoManager.showingDeletedItems && isDeletedEditMode {
-                        deletedEditButtonsView
-                    }
                     
-                    // 削除済みメモ選択時のアクションバー
-                    if memoManager.showingDeletedItems && !memoManager.selectedDeletedMemos.isEmpty {
-                        selectedDeletedMemosActionView
-                    }
-                    
-                    // 通常モードでメモ選択時のアクションバー
-                    if !memoManager.showingDeletedItems && !memoManager.selectedMemos.isEmpty {
-                        selectedMemosActionView
-                    }
                 }
                 .background(Color(red: 0.95, green: 0.95, blue: 0.95))
                 .navigationBarHidden(true)
@@ -69,6 +53,34 @@ struct ContentView: View {
                     Spacer()
                 }
                 .transition(.move(edge: .leading))
+            }
+            
+            // フローティングアクションボタンとアクションバー（横並び）
+            VStack {
+                Spacer()
+                HStack {
+                    // アクションバー（左側）
+                    if !memoManager.showingDeletedItems && !memoManager.selectedMemos.isEmpty {
+                        selectedMemosActionView
+                    } else if memoManager.showingDeletedItems && !memoManager.selectedDeletedMemos.isEmpty {
+                        selectedDeletedMemosActionView
+                    } else if memoManager.showingDeletedItems && isDeletedEditMode {
+                        deletedEditButtonsView
+                    } else {
+                        Spacer()
+                    }
+                    
+                    // フローティングアクションボタン（右側）
+                    floatingActionButton
+                }
+                .padding(.horizontal, 20)
+                .padding(.bottom, 70) // 広告バナーの上に配置
+            }
+            
+            // 広告バナー（最下部）
+            VStack {
+                Spacer()
+                bannerAdView
             }
         }
             .sheet(isPresented: $showingAddMemo) {
@@ -160,8 +172,8 @@ struct ContentView: View {
         .background(Color(red: 0.302, green: 0.8, blue: 0.416))
     }
     
-    // MARK: - 新しいメモを作成ボタン
-    private var addMemoButton: some View {
+    // MARK: - フローティングアクションボタン（新規メモ作成）
+    private var floatingActionButton: some View {
         Button(action: {
             showingAddMemo = true
             // 選択を解除
@@ -171,22 +183,59 @@ struct ContentView: View {
                 memoManager.selectedMemos.removeAll()
             }
         }) {
-            HStack {
-                Spacer()
-                Text("新規メモ作成")
-                    .font(.system(size: 18))
-                    .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
-                Spacer()
+            Image(systemName: "plus")
+                .font(.system(size: 28, weight: .medium))
+                .foregroundColor(.white)
+                .frame(width: 64, height: 64)
+                .background(Color(red: 0.302, green: 0.8, blue: 0.416))
+                .clipShape(Circle())
+                .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
+        }
+    }
+    
+    // MARK: - 広告バナー
+    private var bannerAdView: some View {
+        HStack {
+            // 左側のアイコン
+            HStack(spacing: 8) {
+                Image(systemName: "info.circle")
+                    .foregroundColor(.gray)
+                Image(systemName: "ellipsis.vertical")
+                    .foregroundColor(.gray)
             }
-            .padding(.vertical, 20)
-            .background(Color.white)
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color(red: 0.302, green: 0.8, blue: 0.416), lineWidth: 2)
-            )
+            
+            Spacer()
+            
+            // 中央のテキスト
+            Text("広告スペース")
+                .font(.system(size: 14))
+                .foregroundColor(.black)
+            
+            Spacer()
+            
+            // 右側のボタン
+            Button(action: {
+                // 広告タップ時の処理
+            }) {
+                Text("開く >")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(Color.blue)
+                    .cornerRadius(4)
+            }
         }
         .padding(.horizontal, 16)
-        .padding(.top, 16)
+        .padding(.vertical, 12)
+        .background(Color.white)
+        .overlay(
+            Rectangle()
+                .frame(height: 1)
+                .foregroundColor(Color.gray.opacity(0.3)),
+            alignment: .top
+        )
+        .frame(height: 50)
     }
     
     // MARK: - メモリストビュー
@@ -204,6 +253,7 @@ struct ContentView: View {
                 .listStyle(PlainListStyle())
                 .background(Color(red: 0.95, green: 0.95, blue: 0.95))
                 .padding(.top, 8)
+                .padding(.bottom, 80) // フローティングボタンとの重なりを避ける
             } else {
                 List {
                     ForEach(memoManager.sortedMemos, id: \.id) { memo in
@@ -225,6 +275,7 @@ struct ContentView: View {
                 .listStyle(PlainListStyle())
                 .background(Color(red: 0.95, green: 0.95, blue: 0.95))
                 .padding(.top, 8)
+                .padding(.bottom, 80) // フローティングボタンとの重なりを避ける
             }
         }
     }
@@ -254,10 +305,10 @@ struct ContentView: View {
                     .foregroundColor(.white)
             }
         }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 16)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
         .background(Color.gray.opacity(0.1))
-        .padding(.bottom, 20)
+        .cornerRadius(8)
     }
     
     // MARK: - 選択された削除済みメモ用のアクションバー
@@ -299,10 +350,10 @@ struct ContentView: View {
                     .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
             }
         }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 16)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
         .background(Color.gray.opacity(0.1))
-        .padding(.bottom, 20)
+        .cornerRadius(8)
     }
     
     // MARK: - 選択されたメモ用のアクションバー
@@ -345,10 +396,10 @@ struct ContentView: View {
                     .foregroundColor(Color(red: 0.302, green: 0.8, blue: 0.416))
             }
         }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 16)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
         .background(Color.gray.opacity(0.1))
-        .padding(.bottom, 20)
+        .cornerRadius(8)
     }
     
     // MARK: - 並び替え機能
