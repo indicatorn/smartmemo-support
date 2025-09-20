@@ -681,7 +681,7 @@ struct GenreSelectionView: View {
         }) {
             HStack {
                 Image(systemName: genreIcon(for: genre.name))
-                    .foregroundColor(Color.black)
+                    .foregroundColor(.blue)
                     .frame(width: 24)
                 
                 Text(genre.name)
@@ -690,6 +690,8 @@ struct GenreSelectionView: View {
                 Spacer()
             }
             .padding(.vertical, 4)
+            .frame(maxWidth: .infinity, minHeight: 32)
+            .contentShape(Rectangle())
         }
         .buttonStyle(PlainButtonStyle())
     }
