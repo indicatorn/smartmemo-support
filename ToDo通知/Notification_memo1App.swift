@@ -1,5 +1,5 @@
 //
-//  Notification_memo1App.swift
+//  ToDo通知.swift
 //  ToDo通知
 //
 //  Created by 印出啓人 on 2025/09/06.
@@ -9,7 +9,7 @@ import SwiftUI
 import UserNotifications
 
 @main
-struct Notification_memo1App: App {
+struct ToDo通知: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     var body: some Scene {

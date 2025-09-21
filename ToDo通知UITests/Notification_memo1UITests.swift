@@ -1,13 +1,13 @@
 //
-//  Notification_memo1UITests.swift
-//  Notification memo1UITests
+//  ToDo通知UITests.swift
+//  ToDo通知UITests
 //
 //  Created by 印出啓人 on 2025/09/06.
 //
 
 import XCTest
 
-final class Notification_memo1UITests: XCTestCase {
+final class ToDo通知UITests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.

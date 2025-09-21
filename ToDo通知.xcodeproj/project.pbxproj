@@ -12,37 +12,37 @@
 			containerPortal = C3C259F92E6BCABD00A4CAB6 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = C3C25A002E6BCABD00A4CAB6;
-			remoteInfo = "Notification memo1";
+			remoteInfo = "ToDo通知";
 		};
 		C3C25A1A2E6BCABE00A4CAB6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C3C259F92E6BCABD00A4CAB6 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = C3C25A002E6BCABD00A4CAB6;
-			remoteInfo = "Notification memo1";
+			remoteInfo = "ToDo通知";
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		C3C25A012E6BCABD00A4CAB6 /* Notification memo1.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Notification memo1.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		C3C25A0F2E6BCABE00A4CAB6 /* Notification memo1Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Notification memo1Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		C3C25A192E6BCABE00A4CAB6 /* Notification memo1UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Notification memo1UITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C3C25A012E6BCABD00A4CAB6 /* ToDo通知.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ToDo通知.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C3C25A0F2E6BCABE00A4CAB6 /* ToDo通知Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ToDo通知Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C3C25A192E6BCABE00A4CAB6 /* ToDo通知UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ToDo通知UITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		C3C25A032E6BCABD00A4CAB6 /* Notification memo1 */ = {
+		C3C25A032E6BCABD00A4CAB6 /* ToDo通知 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "Notification memo1";
+			path = "ToDo通知";
 			sourceTree = "<group>";
 		};
-		C3C25A122E6BCABE00A4CAB6 /* Notification memo1Tests */ = {
+		C3C25A122E6BCABE00A4CAB6 /* ToDo通知Tests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "Notification memo1Tests";
+			path = "ToDo通知Tests";
 			sourceTree = "<group>";
 		};
-		C3C25A1C2E6BCABE00A4CAB6 /* Notification memo1UITests */ = {
+		C3C25A1C2E6BCABE00A4CAB6 /* ToDo通知UITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "Notification memo1UITests";
+			path = "ToDo通知UITests";
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -75,9 +75,9 @@
 		C3C259F82E6BCABD00A4CAB6 = {
 			isa = PBXGroup;
 			children = (
-				C3C25A032E6BCABD00A4CAB6 /* Notification memo1 */,
-				C3C25A122E6BCABE00A4CAB6 /* Notification memo1Tests */,
-				C3C25A1C2E6BCABE00A4CAB6 /* Notification memo1UITests */,
+				C3C25A032E6BCABD00A4CAB6 /* ToDo通知 */,
+				C3C25A122E6BCABE00A4CAB6 /* ToDo通知Tests */,
+				C3C25A1C2E6BCABE00A4CAB6 /* ToDo通知UITests */,
 				C3C25A022E6BCABD00A4CAB6 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -85,9 +85,9 @@
 		C3C25A022E6BCABD00A4CAB6 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C3C25A012E6BCABD00A4CAB6 /* Notification memo1.app */,
-				C3C25A0F2E6BCABE00A4CAB6 /* Notification memo1Tests.xctest */,
-				C3C25A192E6BCABE00A4CAB6 /* Notification memo1UITests.xctest */,
+				C3C25A012E6BCABD00A4CAB6 /* ToDo通知.app */,
+				C3C25A0F2E6BCABE00A4CAB6 /* ToDo通知Tests.xctest */,
+				C3C25A192E6BCABE00A4CAB6 /* ToDo通知UITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -95,9 +95,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C3C25A002E6BCABD00A4CAB6 /* Notification memo1 */ = {
+		C3C25A002E6BCABD00A4CAB6 /* ToDo通知 */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C3C25A232E6BCABE00A4CAB6 /* Build configuration list for PBXNativeTarget "Notification memo1" */;
+			buildConfigurationList = C3C25A232E6BCABE00A4CAB6 /* Build configuration list for PBXNativeTarget "ToDo通知" */;
 			buildPhases = (
 				C3C259FD2E6BCABD00A4CAB6 /* Sources */,
 				C3C259FE2E6BCABD00A4CAB6 /* Frameworks */,
@@ -108,18 +108,18 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				C3C25A032E6BCABD00A4CAB6 /* Notification memo1 */,
+				C3C25A032E6BCABD00A4CAB6 /* ToDo通知 */,
 			);
-			name = "Notification memo1";
+			name = "ToDo通知";
 			packageProductDependencies = (
 			);
-			productName = "Notification memo1";
-			productReference = C3C25A012E6BCABD00A4CAB6 /* Notification memo1.app */;
+			productName = "ToDo通知";
+			productReference = C3C25A012E6BCABD00A4CAB6 /* ToDo通知.app */;
 			productType = "com.apple.product-type.application";
 		};
-		C3C25A0E2E6BCABE00A4CAB6 /* Notification memo1Tests */ = {
+		C3C25A0E2E6BCABE00A4CAB6 /* ToDo通知Tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C3C25A262E6BCABE00A4CAB6 /* Build configuration list for PBXNativeTarget "Notification memo1Tests" */;
+			buildConfigurationList = C3C25A262E6BCABE00A4CAB6 /* Build configuration list for PBXNativeTarget "ToDo通知Tests" */;
 			buildPhases = (
 				C3C25A0B2E6BCABE00A4CAB6 /* Sources */,
 				C3C25A0C2E6BCABE00A4CAB6 /* Frameworks */,
@@ -131,18 +131,18 @@
 				C3C25A112E6BCABE00A4CAB6 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				C3C25A122E6BCABE00A4CAB6 /* Notification memo1Tests */,
+				C3C25A122E6BCABE00A4CAB6 /* ToDo通知Tests */,
 			);
-			name = "Notification memo1Tests";
+			name = "ToDo通知Tests";
 			packageProductDependencies = (
 			);
 			productName = "Notification memo1Tests";
-			productReference = C3C25A0F2E6BCABE00A4CAB6 /* Notification memo1Tests.xctest */;
+			productReference = C3C25A0F2E6BCABE00A4CAB6 /* ToDo通知Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		C3C25A182E6BCABE00A4CAB6 /* Notification memo1UITests */ = {
+		C3C25A182E6BCABE00A4CAB6 /* ToDo通知UITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C3C25A292E6BCABE00A4CAB6 /* Build configuration list for PBXNativeTarget "Notification memo1UITests" */;
+			buildConfigurationList = C3C25A292E6BCABE00A4CAB6 /* Build configuration list for PBXNativeTarget "ToDo通知UITests" */;
 			buildPhases = (
 				C3C25A152E6BCABE00A4CAB6 /* Sources */,
 				C3C25A162E6BCABE00A4CAB6 /* Frameworks */,
@@ -154,13 +154,13 @@
 				C3C25A1B2E6BCABE00A4CAB6 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				C3C25A1C2E6BCABE00A4CAB6 /* Notification memo1UITests */,
+				C3C25A1C2E6BCABE00A4CAB6 /* ToDo通知UITests */,
 			);
-			name = "Notification memo1UITests";
+			name = "ToDo通知UITests";
 			packageProductDependencies = (
 			);
 			productName = "Notification memo1UITests";
-			productReference = C3C25A192E6BCABE00A4CAB6 /* Notification memo1UITests.xctest */;
+			productReference = C3C25A192E6BCABE00A4CAB6 /* ToDo通知UITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -186,7 +186,7 @@
 					};
 				};
 			};
-			buildConfigurationList = C3C259FC2E6BCABD00A4CAB6 /* Build configuration list for PBXProject "Notification memo1" */;
+			buildConfigurationList = C3C259FC2E6BCABD00A4CAB6 /* Build configuration list for PBXProject "ToDo通知" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -200,9 +200,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C3C25A002E6BCABD00A4CAB6 /* Notification memo1 */,
-				C3C25A0E2E6BCABE00A4CAB6 /* Notification memo1Tests */,
-				C3C25A182E6BCABE00A4CAB6 /* Notification memo1UITests */,
+				C3C25A002E6BCABD00A4CAB6 /* ToDo通知 */,
+				C3C25A0E2E6BCABE00A4CAB6 /* ToDo通知Tests */,
+				C3C25A182E6BCABE00A4CAB6 /* ToDo通知UITests */,
 			);
 		};
 /* End PBXProject section */
@@ -258,12 +258,12 @@
 /* Begin PBXTargetDependency section */
 		C3C25A112E6BCABE00A4CAB6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C3C25A002E6BCABD00A4CAB6 /* Notification memo1 */;
+			target = C3C25A002E6BCABD00A4CAB6 /* ToDo通知 */;
 			targetProxy = C3C25A102E6BCABE00A4CAB6 /* PBXContainerItemProxy */;
 		};
 		C3C25A1B2E6BCABE00A4CAB6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C3C25A002E6BCABD00A4CAB6 /* Notification memo1 */;
+			target = C3C25A002E6BCABD00A4CAB6 /* ToDo通知 */;
 			targetProxy = C3C25A1A2E6BCABE00A4CAB6 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -388,11 +388,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "Notification memo1/Notification_memo1.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "ToDo通知/ToDo通知.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "ToDo通知";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -408,7 +410,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.3;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Indy.Notification-memo1";
+				PRODUCT_BUNDLE_IDENTIFIER = com.KeitoInde.todonotification;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
@@ -425,11 +427,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "Notification memo1/Notification_memo1.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "ToDo通知/ToDo通知.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "ToDo通知";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -445,7 +449,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.3;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Indy.Notification-memo1";
+				PRODUCT_BUNDLE_IDENTIFIER = com.KeitoInde.todonotification;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
@@ -467,14 +471,14 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
 				MACOSX_DEPLOYMENT_TARGET = 15.3;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Indy.Notification-memo1Tests";
+				PRODUCT_BUNDLE_IDENTIFIER = "Indy.ToDo通知Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Notification memo1.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Notification memo1";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ToDo通知.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ToDo通知";
 				XROS_DEPLOYMENT_TARGET = 2.5;
 			};
 			name = Debug;
@@ -489,14 +493,14 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
 				MACOSX_DEPLOYMENT_TARGET = 15.3;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Indy.Notification-memo1Tests";
+				PRODUCT_BUNDLE_IDENTIFIER = "Indy.ToDo通知Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Notification memo1.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Notification memo1";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ToDo通知.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ToDo通知";
 				XROS_DEPLOYMENT_TARGET = 2.5;
 			};
 			name = Release;
@@ -510,14 +514,14 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
 				MACOSX_DEPLOYMENT_TARGET = 15.3;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Indy.Notification-memo1UITests";
+				PRODUCT_BUNDLE_IDENTIFIER = "Indy.ToDo通知UITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_TARGET_NAME = "Notification memo1";
+				TEST_TARGET_NAME = "ToDo通知";
 				XROS_DEPLOYMENT_TARGET = 2.5;
 			};
 			name = Debug;
@@ -531,14 +535,14 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
 				MACOSX_DEPLOYMENT_TARGET = 15.3;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Indy.Notification-memo1UITests";
+				PRODUCT_BUNDLE_IDENTIFIER = "Indy.ToDo通知UITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_TARGET_NAME = "Notification memo1";
+				TEST_TARGET_NAME = "ToDo通知";
 				XROS_DEPLOYMENT_TARGET = 2.5;
 			};
 			name = Release;
@@ -546,7 +550,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C3C259FC2E6BCABD00A4CAB6 /* Build configuration list for PBXProject "Notification memo1" */ = {
+		C3C259FC2E6BCABD00A4CAB6 /* Build configuration list for PBXProject "ToDo通知" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C3C25A212E6BCABE00A4CAB6 /* Debug */,
@@ -555,7 +559,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C3C25A232E6BCABE00A4CAB6 /* Build configuration list for PBXNativeTarget "Notification memo1" */ = {
+		C3C25A232E6BCABE00A4CAB6 /* Build configuration list for PBXNativeTarget "ToDo通知" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C3C25A242E6BCABE00A4CAB6 /* Debug */,
@@ -564,7 +568,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C3C25A262E6BCABE00A4CAB6 /* Build configuration list for PBXNativeTarget "Notification memo1Tests" */ = {
+		C3C25A262E6BCABE00A4CAB6 /* Build configuration list for PBXNativeTarget "ToDo通知Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C3C25A272E6BCABE00A4CAB6 /* Debug */,
@@ -573,7 +577,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C3C25A292E6BCABE00A4CAB6 /* Build configuration list for PBXNativeTarget "Notification memo1UITests" */ = {
+		C3C25A292E6BCABE00A4CAB6 /* Build configuration list for PBXNativeTarget "ToDo通知UITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C3C25A2A2E6BCABE00A4CAB6 /* Debug */,
