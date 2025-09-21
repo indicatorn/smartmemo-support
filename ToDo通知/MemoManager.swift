@@ -67,8 +67,12 @@ class MemoManager: ObservableObject {
             if !self.genres.contains(where: { $0.name == "メモ" }) {
                 let memoGenre = Genre(name: "メモ", isDefault: true)
                 self.genres.append(memoGenre)
-                saveGenres()
             }
+            
+            // 無効なジャンル（空文字列や無題）をクリーンアップ
+            self.genres = self.genres.filter { !$0.name.isEmpty && $0.name != "無題" }
+            
+            saveGenres()
         } else {
             // 初回起動時はデフォルトジャンルを使用
             self.genres = Genre.defaultGenres
@@ -89,7 +93,21 @@ class MemoManager: ObservableObject {
                           notificationDate: notificationDate,
                           notificationInterval: interval,
                           snoozeInterval: snoozeInterval)
-        newMemo.genre = genre
+        
+        // ジャンルが存在しない場合の処理
+        if !genres.contains(where: { $0.name == genre }) {
+            // 無効なジャンル名（空文字列、無題）の場合は「メモ」に変更
+            if genre.isEmpty || genre == "無題" {
+                newMemo.genre = "メモ"
+            } else {
+                // 有効なジャンル名の場合は自動的にシートを追加
+                addGenre(genre)
+                newMemo.genre = genre
+            }
+        } else {
+            newMemo.genre = genre
+        }
+        
         memos.append(newMemo)
         
         if let notificationDate = notificationDate, interval != .none {
@@ -105,7 +123,20 @@ class MemoManager: ObservableObject {
             memos[index].notificationDate = notificationDate
             memos[index].notificationInterval = interval
             memos[index].snoozeInterval = snoozeInterval
-            memos[index].genre = genre
+            
+            // ジャンルが存在しない場合の処理
+            if !genres.contains(where: { $0.name == genre }) {
+                // 無効なジャンル名（空文字列、無題）の場合は「メモ」に変更
+                if genre.isEmpty || genre == "無題" {
+                    memos[index].genre = "メモ"
+                } else {
+                    // 有効なジャンル名の場合は自動的にシートを追加
+                    addGenre(genre)
+                    memos[index].genre = genre
+                }
+            } else {
+                memos[index].genre = genre
+            }
             
             // 既存の通知をキャンセルして新しい通知をスケジュール
             cancelNotification(for: memo)
@@ -141,9 +172,15 @@ class MemoManager: ObservableObject {
             var restoredMemo = deletedMemos[index]
             restoredMemo.isDeleted = false
             
-            // タグに対応するシートが存在しない場合は自動的にシートを追加
+            // ジャンルが存在しない場合の処理
             if restoredMemo.genre != "すべてのメモ" && !genres.contains(where: { $0.name == restoredMemo.genre }) {
-                addGenre(restoredMemo.genre)
+                // 無効なジャンル名（空文字列、無題）の場合は「メモ」に変更
+                if restoredMemo.genre.isEmpty || restoredMemo.genre == "無題" {
+                    restoredMemo.genre = "メモ"
+                } else {
+                    // 有効なジャンル名の場合は自動的にシートを追加
+                    addGenre(restoredMemo.genre)
+                }
             }
             
             memos.append(restoredMemo)
@@ -608,7 +645,19 @@ class MemoManager: ObservableObject {
     func moveSelectedMemosToGenre(_ genreName: String) {
         let selectedMemosList = memos.filter { selectedMemos.contains($0.id) }
         for memo in selectedMemosList {
-            updateMemoGenre(memo, genre: genreName)
+            // ジャンルが存在しない場合の処理
+            if !genres.contains(where: { $0.name == genreName }) {
+                // 無効なジャンル名（空文字列、無題）の場合は「メモ」に変更
+                if genreName.isEmpty || genreName == "無題" {
+                    updateMemoGenre(memo, genre: "メモ")
+                } else {
+                    // 有効なジャンル名の場合は自動的にシートを追加
+                    addGenre(genreName)
+                    updateMemoGenre(memo, genre: genreName)
+                }
+            } else {
+                updateMemoGenre(memo, genre: genreName)
+            }
         }
         selectedMemos.removeAll()
     }
