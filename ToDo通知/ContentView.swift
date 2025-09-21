@@ -307,7 +307,7 @@ struct ContentView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
-        .background(Color.gray.opacity(0.1))
+        .background(Color.white)
         .cornerRadius(8)
     }
     
@@ -352,7 +352,7 @@ struct ContentView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
-        .background(Color.gray.opacity(0.1))
+        .background(Color.white)
         .cornerRadius(8)
     }
     
@@ -398,7 +398,7 @@ struct ContentView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
-        .background(Color.gray.opacity(0.1))
+        .background(Color.white)
         .cornerRadius(8)
     }
     
@@ -466,7 +466,7 @@ struct MemoRowView: View {
                             .foregroundColor(Color.gray)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 2)
-                            .background(Color.gray.opacity(0.1))
+                            .background(Color.white)
                             .cornerRadius(4)
                     }
                 }
@@ -596,7 +596,7 @@ struct DeletedMemoRowView: View {
                             .foregroundColor(Color.gray)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 2)
-                            .background(Color.gray.opacity(0.1))
+                            .background(Color.white)
                             .cornerRadius(4)
                     }
                 }
