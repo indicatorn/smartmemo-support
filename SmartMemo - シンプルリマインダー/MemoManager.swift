@@ -303,6 +303,20 @@ class MemoManager: ObservableObject {
         }
     }
     
+    func checkPendingNotifications() {
+        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+            DispatchQueue.main.async {
+                print("保留中の通知数: \(requests.count)")
+                for request in requests {
+                    if let trigger = request.trigger as? UNCalendarNotificationTrigger {
+                        print("- 通知: \(request.content.title) - \(request.content.body)")
+                        print("  日時: \(trigger.dateComponents)")
+                    }
+                }
+            }
+        }
+    }
+    
     func scheduleNotification(for memo: Memo) {
         guard let notificationDate = memo.notificationDate else { 
             print("通知日時が設定されていません: \(memo.title)")
@@ -327,6 +341,9 @@ class MemoManager: ObservableObject {
         if let interval = memo.notificationInterval.timeInterval, memo.notificationInterval != .none {
             scheduleRepeatingNotification(for: memo, interval: interval)
         }
+        
+        // 保留中の通知を確認
+        checkPendingNotifications()
     }
     
     private func scheduleInitialNotification(for memo: Memo, at date: Date) {
