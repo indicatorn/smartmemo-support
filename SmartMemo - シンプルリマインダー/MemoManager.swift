@@ -336,9 +336,15 @@ class MemoManager: ObservableObject {
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
         let request = UNNotificationRequest(identifier: memo.id.uuidString, content: content, trigger: trigger)
         
+        print("🔔 通知スケジュール実行: \(memo.title)")
+        print("🔔 通知ID: \(memo.id.uuidString)")
+        print("🔔 通知日時: \(date)")
+        
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
                 print("通知のスケジュールに失敗しました: \(error)")
+            } else {
+                print("🔔 通知スケジュール成功: \(memo.id.uuidString)")
             }
         }
     }
@@ -456,7 +462,7 @@ class MemoManager: ObservableObject {
         guard snoozeCount <= 100 else { return }
         
         let content = UNMutableNotificationContent()
-        content.title = "ToDo通知 - スヌーズ (\(snoozeCount)/100回目)"
+        content.title = "SmartMemo - スヌーズ (\(snoozeCount)/100回目)"
         content.body = memo.title
         content.sound = .default
         
