@@ -447,6 +447,11 @@ class MemoManager: ObservableObject {
         print("🔔 キャンセル対象ID数: \(identifiers.count)")
         print("🔔 キャンセル対象ID: \(identifiers.prefix(5))...")
         
+        // スヌーズ通知IDが含まれているか確認
+        let snoozeIds = identifiers.filter { $0.contains("_snooze_") }
+        print("🔔 スヌーズ通知ID数: \(snoozeIds.count)")
+        print("🔔 スヌーズ通知ID: \(snoozeIds.prefix(3))...")
+        
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers)
         
         // キャンセル後の保留中通知を確認
