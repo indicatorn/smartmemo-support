@@ -325,7 +325,6 @@ struct ContentView: View {
         HStack {
             Button(action: {
                 // 全て復元
-                print("🔄 全復元ボタンタップ")
                 memoManager.restoreAllDeletedMemos()
                 isDeletedEditMode = false
             }) {
@@ -356,7 +355,6 @@ struct ContentView: View {
     private var selectedDeletedMemosActionView: some View {
         HStack {
             Button(action: {
-                print("🔄 一括復元ボタンタップ")
                 memoManager.bulkRestoreSelectedDeletedMemos()
             }) {
                 Text("復元")
@@ -675,7 +673,6 @@ struct DeletedMemoRowView: View {
                             .fill(Color("AccentBlue"))
                             .frame(width: 16, height: 16)
                             .onAppear {
-                                print("選択状態の円を表示: \(memo.title)")
                             }
                     }
                 }
@@ -773,7 +770,6 @@ struct DeletedMemoRowView: View {
         }
         .swipeActions(edge: .trailing) {
             Button("復元") {
-                print("🔄 復元ボタンタップ: \(memo.title)")
                 memoManager.restoreMemo(memo)
             }
             .tint(.green)

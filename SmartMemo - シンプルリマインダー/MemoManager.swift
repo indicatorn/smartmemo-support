@@ -153,9 +153,6 @@ class MemoManager: ObservableObject {
     
     func deleteMemo(_ memo: Memo) {
         if let index = memos.firstIndex(where: { $0.id == memo.id }) {
-            print("🗑️ メモ削除開始: \(memo.title)")
-            print("🗑️ 通知設定: 間隔=\(memo.notificationInterval), スヌーズ=\(memo.snoozeInterval)")
-            
             var deletedMemo = memos[index]
             deletedMemo.isDeleted = true
             deletedMemos.append(deletedMemo)
@@ -186,21 +183,8 @@ class MemoManager: ObservableObject {
             deletedMemos.remove(at: index)
             
             // 通知が設定されている場合は再スケジュール
-            if let notificationDate = restoredMemo.notificationDate {
-                print("🔄 メモ復元: \(restoredMemo.title)")
-                print("🔄 通知日時: \(notificationDate)")
-                print("🔄 現在日時: \(Date())")
-                print("🔄 通知日時は未来か: \(notificationDate > Date())")
-                
-                // 通知日時が未来の場合のみ再スケジュール
-                if notificationDate > Date() {
-                    print("🔄 通知日時が未来のため再スケジュールします")
-                    scheduleNotification(for: restoredMemo)
-                } else {
-                    print("🔄 通知日時が過去のため再スケジュールしません")
-                }
-            } else {
-                print("🔄 メモ復元: \(restoredMemo.title) - 通知日時が設定されていません")
+            if let notificationDate = restoredMemo.notificationDate, notificationDate > Date() {
+                scheduleNotification(for: restoredMemo)
             }
             
             // 選択状態からも削除
@@ -212,9 +196,6 @@ class MemoManager: ObservableObject {
     
     func permanentlyDelete(_ memo: Memo) {
         if let index = deletedMemos.firstIndex(where: { $0.id == memo.id }) {
-            print("🗑️ 完全削除開始: \(memo.title)")
-            print("🗑️ 通知設定: 間隔=\(memo.notificationInterval), スヌーズ=\(memo.snoozeInterval)")
-            
             deletedMemos.remove(at: index)
             
             // 選択状態からも削除
@@ -305,48 +286,26 @@ class MemoManager: ObservableObject {
     
     
     func scheduleNotification(for memo: Memo) {
-        guard let notificationDate = memo.notificationDate else { 
-            print("🔔 通知スケジュール開始: \(memo.title) - 通知日時が設定されていません")
-            return 
-        }
-        
-        print("🔔 通知スケジュール開始: \(memo.title)")
-        print("🔔 通知日時: \(notificationDate)")
-        print("🔔 現在日時: \(Date())")
-        print("🔔 通知間隔: \(memo.notificationInterval)")
-        print("🔔 スヌーズ間隔: \(memo.snoozeInterval)")
+        guard let notificationDate = memo.notificationDate else { return }
         
         // 初回通知をスケジュール
         scheduleInitialNotification(for: memo, at: notificationDate)
         
         // スヌーズ間隔が設定されている場合、スヌーズ通知もスケジュール
         if let snoozeInterval = memo.snoozeInterval.timeInterval, memo.snoozeInterval != .none {
-            print("🔔 スヌーズ通知スケジュール条件: 間隔=\(memo.snoozeInterval), 時間=\(snoozeInterval)")
             let snoozeDate = notificationDate.addingTimeInterval(snoozeInterval)
-            print("🔔 スヌーズ通知日時計算: \(notificationDate) + \(snoozeInterval) = \(snoozeDate)")
             scheduleSnoozeNotification(for: memo, at: snoozeDate, snoozeCount: 1)
-        } else {
-            print("🔔 スヌーズ通知スケジュール条件: 間隔=\(memo.snoozeInterval), スケジュールしない")
         }
         
         // 繰り返し通知の設定
         if let interval = memo.notificationInterval.timeInterval, memo.notificationInterval != .none {
-            print("🔔 繰り返し通知スケジュール条件: 間隔=\(memo.notificationInterval), 時間=\(interval)")
             scheduleRepeatingNotification(for: memo, interval: interval)
-        } else {
-            print("🔔 繰り返し通知スケジュール条件: 間隔=\(memo.notificationInterval), スケジュールしない")
         }
     }
     
     private func scheduleInitialNotification(for memo: Memo, at date: Date) {
-        print("🔔 初回通知スケジュール開始: \(memo.title)")
-        print("🔔 通知日時: \(date)")
-        print("🔔 現在日時: \(Date())")
-        print("🔔 通知日時は未来か: \(date > Date())")
-        
         // 過去の日時の場合はスケジュールしない
         if date <= Date() {
-            print("🔔 通知日時が過去のためスケジュールしません")
             return
         }
         
@@ -366,15 +325,9 @@ class MemoManager: ObservableObject {
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
         let request = UNNotificationRequest(identifier: memo.id.uuidString, content: content, trigger: trigger)
         
-        print("🔔 通知スケジュール実行: \(memo.title)")
-        print("🔔 通知ID: \(memo.id.uuidString)")
-        print("🔔 通知日時: \(date)")
-        
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
                 print("通知のスケジュールに失敗しました: \(error)")
-            } else {
-                print("🔔 通知スケジュール成功: \(memo.id.uuidString)")
             }
         }
     }
@@ -398,12 +351,8 @@ class MemoManager: ObservableObject {
     private func scheduleRepeatingNotification(for memo: Memo, interval: TimeInterval) {
         guard let notificationDate = memo.notificationDate else { return }
         
-        print("🔔 繰り返し通知スケジュール実行: \(memo.title)")
-        print("🔔 繰り返し通知間隔: \(interval)秒")
-        
         // 毎月の場合は特別な処理
         if memo.notificationInterval == .monthly {
-            print("🔔 毎月通知スケジュール実行: \(memo.title)")
             scheduleMonthlyNotification(for: memo, at: notificationDate)
             return
         }
@@ -416,13 +365,9 @@ class MemoManager: ObservableObject {
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: interval, repeats: true)
         let request = UNNotificationRequest(identifier: "\(memo.id.uuidString)_repeat", content: content, trigger: trigger)
         
-        print("🔔 繰り返し通知ID: \(memo.id.uuidString)_repeat")
-        
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
                 print("繰り返し通知のスケジュールに失敗しました: \(error)")
-            } else {
-                print("🔔 繰り返し通知スケジュール成功: \(memo.id.uuidString)_repeat")
             }
         }
     }
@@ -433,9 +378,6 @@ class MemoManager: ObservableObject {
         let originalDay = calendar.component(.day, from: date)
         let originalHour = calendar.component(.hour, from: date)
         let originalMinute = calendar.component(.minute, from: date)
-        
-        print("🔔 毎月通知スケジュール開始: \(memo.title)")
-        print("🔔 毎月通知対象月数: 12ヶ月")
         
         // 12ヶ月分の通知をスケジュール
         for monthOffset in 1...12 {
@@ -465,23 +407,15 @@ class MemoManager: ObservableObject {
             let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
             let request = UNNotificationRequest(identifier: "\(memo.id.uuidString)_monthly_\(monthOffset)", content: content, trigger: trigger)
             
-            print("🔔 毎月通知ID: \(memo.id.uuidString)_monthly_\(monthOffset)")
-            print("🔔 毎月通知日時: \(finalDate)")
-            
             UNUserNotificationCenter.current().add(request) { error in
                 if let error = error {
                     print("毎月通知のスケジュールに失敗しました: \(error)")
-                } else {
-                    print("🔔 毎月通知スケジュール成功: \(memo.id.uuidString)_monthly_\(monthOffset)")
                 }
             }
         }
     }
     
     func cancelNotification(for memo: Memo) {
-        print("🔔 通知キャンセル開始: \(memo.title)")
-        print("🔔 通知設定: 間隔=\(memo.notificationInterval), スヌーズ=\(memo.snoozeInterval)")
-        
         // 基本の通知ID
         var identifiers = [memo.id.uuidString, "\(memo.id.uuidString)_repeat"]
         
@@ -495,61 +429,15 @@ class MemoManager: ObservableObject {
             identifiers.append("\(memo.id.uuidString)_snooze_\(i)")
         }
         
-        print("🔔 キャンセル対象ID数: \(identifiers.count)")
-        print("🔔 キャンセル対象ID: \(identifiers.prefix(5))...")
-        
-        // スヌーズ通知IDが含まれているか確認
-        let snoozeIds = identifiers.filter { $0.contains("_snooze_") }
-        print("🔔 スヌーズ通知ID数: \(snoozeIds.count)")
-        print("🔔 スヌーズ通知ID: \(snoozeIds.prefix(3))...")
-        
-        // キャンセル前の保留中通知を確認
-        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
-            DispatchQueue.main.async {
-                print("🔔 キャンセル前の保留中通知数: \(requests.count)")
-                let relatedNotificationsBefore = requests.filter { request in
-                    request.identifier.contains(memo.id.uuidString)
-                }
-                print("🔔 キャンセル前の関連通知数: \(relatedNotificationsBefore.count)")
-                
-                // 通知をキャンセル
-                UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers)
-                
-                // キャンセル後の保留中通知を確認
-                UNUserNotificationCenter.current().getPendingNotificationRequests { requestsAfter in
-                    DispatchQueue.main.async {
-                        print("🔔 キャンセル後の保留中通知数: \(requestsAfter.count)")
-                        let relatedNotificationsAfter = requestsAfter.filter { request in
-                            request.identifier.contains(memo.id.uuidString)
-                        }
-                        print("🔔 キャンセル後の関連通知数: \(relatedNotificationsAfter.count)")
-                        print("🔔 関連する通知が残っているか: \(relatedNotificationsAfter.count > 0)")
-                        
-                        if relatedNotificationsAfter.count > 0 {
-                            print("🔔 残っている通知ID: \(relatedNotificationsAfter.map { $0.identifier })")
-                        }
-                    }
-                }
-            }
-        }
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers)
     }
     
     private func scheduleSnoozeNotification(for memo: Memo, at date: Date, snoozeCount: Int) {
         // 上限100回まで
-        guard snoozeCount <= 100 else { 
-            print("🔔 スヌーズ通知上限に達しました: \(snoozeCount)回目")
-            return 
-        }
-        
-        print("🔔 スヌーズ通知スケジュール開始: \(memo.title)")
-        print("🔔 スヌーズ回数: \(snoozeCount)/100回目")
-        print("🔔 スヌーズ通知日時: \(date)")
-        print("🔔 現在日時: \(Date())")
-        print("🔔 スヌーズ通知日時は未来か: \(date > Date())")
+        guard snoozeCount <= 100 else { return }
         
         // 過去の日時の場合はスケジュールしない
         if date <= Date() {
-            print("🔔 スヌーズ通知日時が過去のためスケジュールしません")
             return
         }
         
@@ -573,15 +461,9 @@ class MemoManager: ObservableObject {
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
         let request = UNNotificationRequest(identifier: "\(memo.id.uuidString)_snooze_\(snoozeCount)", content: content, trigger: trigger)
         
-        print("🔔 スヌーズ通知スケジュール実行: \(memo.title)")
-        print("🔔 スヌーズ通知ID: \(memo.id.uuidString)_snooze_\(snoozeCount)")
-        print("🔔 スヌーズ通知日時: \(date)")
-        
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
                 print("スヌーズ通知のスケジュールに失敗しました: \(error)")
-            } else {
-                print("スヌーズ通知をスケジュールしました: \(memo.title) at \(date) (\(snoozeCount)回目)")
             }
         }
     }
@@ -715,10 +597,8 @@ class MemoManager: ObservableObject {
     }
     
     func bulkRestoreSelectedDeletedMemos() {
-        print("🔄 一括復元開始: \(selectedDeletedMemos.count)個のメモ")
         let selectedMemos = deletedMemos.filter { selectedDeletedMemos.contains($0.id) }
         for memo in selectedMemos {
-            print("🔄 一括復元対象: \(memo.title)")
             restoreMemo(memo)
         }
         selectedDeletedMemos.removeAll()
@@ -734,10 +614,8 @@ class MemoManager: ObservableObject {
     
     // MARK: - 全ての削除済みメモを復元
     func restoreAllDeletedMemos() {
-        print("🔄 全復元開始: \(filteredDeletedMemos.count)個のメモ")
         let allDeletedMemos = filteredDeletedMemos
         for memo in allDeletedMemos {
-            print("🔄 全復元対象: \(memo.title)")
             restoreMemo(memo)
         }
     }
@@ -770,10 +648,8 @@ class MemoManager: ObservableObject {
     
     // MARK: - 選択されたメモを一括削除
     func bulkDeleteSelectedMemos() {
-        print("📱 一括削除開始: \(selectedMemos.count)個のメモ")
         let selectedMemosList = memos.filter { selectedMemos.contains($0.id) }
         for memo in selectedMemosList {
-            print("📱 一括削除対象: \(memo.title)")
             deleteMemo(memo)
         }
         selectedMemos.removeAll()
