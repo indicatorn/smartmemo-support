@@ -37,6 +37,10 @@ struct SideMenuView: View {
     // MARK: - ヘッダー
     private var headerView: some View {
         VStack(alignment: .leading, spacing: 16) {
+            // 追加のスペース（2行分）
+            Spacer()
+                .frame(height: 40)
+            
             HStack {
                 Text("メニュー")
                     .font(.title2)
