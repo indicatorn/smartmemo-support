@@ -778,6 +778,7 @@ struct DeletedMemoRowView: View {
         }
         .swipeActions(edge: .trailing) {
             Button("復元") {
+                print("🔄 復元ボタンタップ: \(memo.title)")
                 memoManager.restoreMemo(memo)
             }
             .tint(.green)
