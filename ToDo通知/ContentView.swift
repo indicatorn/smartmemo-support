@@ -459,6 +459,10 @@ struct MemoRowView: View {
     let isEditMode: Bool
     let onEdit: () -> Void
     
+    @State private var isShaking = false
+    @State private var shakeOffset: CGFloat = 0
+    @State private var shakeTimer: Timer?
+    
     var body: some View {
         HStack(spacing: 12) {
             // 編集モード時の左側余白
@@ -522,9 +526,12 @@ struct MemoRowView: View {
                 }
                 
                 HStack {
-                    Text(memo.formattedDate)
-                        .font(.system(size: 14))
-                        .foregroundColor(Color(red: 0.0, green: 0.478, blue: 1.0))
+                    // 通知日時がある場合のみ表示
+                    if memo.notificationDate != nil {
+                        Text(memo.formattedNotificationDate)
+                            .font(.system(size: 14))
+                            .foregroundColor(Color(red: 0.0, green: 0.478, blue: 1.0))
+                    }
                     
                     Spacer()
                     
@@ -554,6 +561,19 @@ struct MemoRowView: View {
                             }
                         }
                     }
+                }
+            }
+            .offset(x: shakeOffset)
+            .onAppear {
+                if isEditMode {
+                    startShaking()
+                }
+            }
+            .onChange(of: isEditMode) { editMode in
+                if editMode {
+                    startShaking()
+                } else {
+                    stopShaking()
                 }
             }
             
@@ -596,6 +616,26 @@ struct MemoRowView: View {
             }
         }
     }
+    
+    private func startShaking() {
+        isShaking = true
+        
+        // Timerを使用した振動実装
+        shakeTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+            withAnimation(.easeInOut(duration: 0.1)) {
+                shakeOffset = shakeOffset == 2 ? -2 : 2
+            }
+        }
+    }
+    
+    private func stopShaking() {
+        isShaking = false
+        shakeTimer?.invalidate()
+        shakeTimer = nil
+        withAnimation(.easeOut(duration: 0.2)) {
+            shakeOffset = 0
+        }
+    }
 }
 
 // MARK: - 削除済みメモ行ビュー
@@ -604,6 +644,10 @@ struct DeletedMemoRowView: View {
     @ObservedObject var memoManager: MemoManager
     @Binding var isDeletedEditMode: Bool
     let onEdit: () -> Void
+    
+    @State private var isShaking = false
+    @State private var shakeOffset: CGFloat = 0
+    @State private var shakeTimer: Timer?
     
     var body: some View {
         HStack(spacing: 12) {
@@ -669,9 +713,25 @@ struct DeletedMemoRowView: View {
                     }
                 }
                 
-                Text(memo.formattedDate)
-                    .font(.system(size: 14))
-                    .foregroundColor(Color(red: 0.0, green: 0.478, blue: 1.0))
+                // 通知日時がある場合のみ表示
+                if memo.notificationDate != nil {
+                    Text(memo.formattedNotificationDate)
+                        .font(.system(size: 14))
+                        .foregroundColor(Color(red: 0.0, green: 0.478, blue: 1.0))
+                }
+            }
+            .offset(x: shakeOffset)
+            .onAppear {
+                if isDeletedEditMode {
+                    startShaking()
+                }
+            }
+            .onChange(of: isDeletedEditMode) { editMode in
+                if editMode {
+                    startShaking()
+                } else {
+                    stopShaking()
+                }
             }
             .onTapGesture {
                 // 編集モードでない場合のみ編集可能
@@ -723,6 +783,26 @@ struct DeletedMemoRowView: View {
                 memoManager.permanentlyDelete(memo)
             }
             .tint(.red)
+        }
+    }
+    
+    private func startShaking() {
+        isShaking = true
+        
+        // Timerを使用した振動実装
+        shakeTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+            withAnimation(.easeInOut(duration: 0.1)) {
+                shakeOffset = shakeOffset == 2 ? -2 : 2
+            }
+        }
+    }
+    
+    private func stopShaking() {
+        isShaking = false
+        shakeTimer?.invalidate()
+        shakeTimer = nil
+        withAnimation(.easeOut(duration: 0.2)) {
+            shakeOffset = 0
         }
     }
 }
