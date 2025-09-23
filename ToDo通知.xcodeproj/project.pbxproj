@@ -110,7 +110,7 @@
 			fileSystemSynchronizedGroups = (
 				C3C25A032E6BCABD00A4CAB6 /* ToDo通知 */,
 			);
-			name = "ToDo通知";
+			name = "SmartMemo - シンプルリマインダー";
 			packageProductDependencies = (
 			);
 			productName = "ToDo通知";
@@ -395,7 +395,7 @@
 				DEVELOPMENT_TEAM = 5DJ89U73Z7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "ToDo通知";
+				INFOPLIST_KEY_CFBundleDisplayName = "SmartMemo";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -437,7 +437,7 @@
 				DEVELOPMENT_TEAM = 5DJ89U73Z7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "ToDo通知";
+				INFOPLIST_KEY_CFBundleDisplayName = "SmartMemo";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;

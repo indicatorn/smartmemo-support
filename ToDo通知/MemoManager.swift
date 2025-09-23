@@ -310,7 +310,7 @@ class MemoManager: ObservableObject {
     
     private func scheduleInitialNotification(for memo: Memo, at date: Date) {
         let content = UNMutableNotificationContent()
-        content.title = "ToDo通知"
+        content.title = "SmartMemo"
         content.body = memo.title
         content.sound = .default
         
@@ -360,7 +360,7 @@ class MemoManager: ObservableObject {
         }
         
         let content = UNMutableNotificationContent()
-        content.title = "ToDo通知"
+        content.title = "SmartMemo"
         content.body = memo.title
         content.sound = .default
         
@@ -397,7 +397,7 @@ class MemoManager: ObservableObject {
             finalDate = calendar.date(bySettingHour: originalHour, minute: originalMinute, second: 0, of: finalDate) ?? finalDate
             
             let content = UNMutableNotificationContent()
-            content.title = "ToDo通知"
+            content.title = "SmartMemo"
             content.body = memo.title
             content.sound = .default
             
