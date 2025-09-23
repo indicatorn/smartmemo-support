@@ -481,6 +481,10 @@ class MemoManager: ObservableObject {
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
         let request = UNNotificationRequest(identifier: "\(memo.id.uuidString)_snooze_\(snoozeCount)", content: content, trigger: trigger)
         
+        print("🔔 スヌーズ通知スケジュール実行: \(memo.title)")
+        print("🔔 スヌーズ通知ID: \(memo.id.uuidString)_snooze_\(snoozeCount)")
+        print("🔔 スヌーズ通知日時: \(date)")
+        
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
                 print("スヌーズ通知のスケジュールに失敗しました: \(error)")
