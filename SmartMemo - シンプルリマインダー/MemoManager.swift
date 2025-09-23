@@ -196,11 +196,12 @@ class MemoManager: ObservableObject {
                 print("🔄 現在日時: \(Date())")
                 print("🔄 通知日時は未来か: \(notificationDate > Date())")
                 
+                // 通知日時が未来の場合のみ再スケジュール
                 if notificationDate > Date() {
-                    print("🔄 通知を再スケジュールします")
+                    print("🔄 通知日時が未来のため再スケジュールします")
                     scheduleNotification(for: restoredMemo)
                 } else {
-                    print("🔄 通知日時が過去のためスケジュールしません")
+                    print("🔄 通知日時が過去のため再スケジュールしません")
                 }
             } else {
                 print("🔄 メモ復元: \(restoredMemo.title) - 通知日時が設定されていません")
@@ -308,7 +309,16 @@ class MemoManager: ObservableObject {
     
     
     func scheduleNotification(for memo: Memo) {
-        guard let notificationDate = memo.notificationDate else { return }
+        guard let notificationDate = memo.notificationDate else { 
+            print("🔔 通知スケジュール開始: \(memo.title) - 通知日時が設定されていません")
+            return 
+        }
+        
+        print("🔔 通知スケジュール開始: \(memo.title)")
+        print("🔔 通知日時: \(notificationDate)")
+        print("🔔 現在日時: \(Date())")
+        print("🔔 通知間隔: \(memo.notificationInterval)")
+        print("🔔 スヌーズ間隔: \(memo.snoozeInterval)")
         
         // 初回通知をスケジュール
         scheduleInitialNotification(for: memo, at: notificationDate)
@@ -333,8 +343,14 @@ class MemoManager: ObservableObject {
     }
     
     private func scheduleInitialNotification(for memo: Memo, at date: Date) {
+        print("🔔 初回通知スケジュール開始: \(memo.title)")
+        print("🔔 通知日時: \(date)")
+        print("🔔 現在日時: \(Date())")
+        print("🔔 通知日時は未来か: \(date > Date())")
+        
         // 過去の日時の場合はスケジュールしない
         if date <= Date() {
+            print("🔔 通知日時が過去のためスケジュールしません")
             return
         }
         
@@ -468,6 +484,7 @@ class MemoManager: ObservableObject {
     
     func cancelNotification(for memo: Memo) {
         print("🔔 通知キャンセル開始: \(memo.title)")
+        print("🔔 通知設定: 間隔=\(memo.notificationInterval), スヌーズ=\(memo.snoozeInterval)")
         
         // 基本の通知ID
         var identifiers = [memo.id.uuidString, "\(memo.id.uuidString)_repeat"]
@@ -490,23 +507,55 @@ class MemoManager: ObservableObject {
         print("🔔 スヌーズ通知ID数: \(snoozeIds.count)")
         print("🔔 スヌーズ通知ID: \(snoozeIds.prefix(3))...")
         
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers)
-        
-        // キャンセル後の保留中通知を確認
+        // キャンセル前の保留中通知を確認
         UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
             DispatchQueue.main.async {
-                print("🔔 キャンセル後の保留中通知数: \(requests.count)")
-                let relatedNotifications = requests.filter { request in
+                print("🔔 キャンセル前の保留中通知数: \(requests.count)")
+                let relatedNotificationsBefore = requests.filter { request in
                     request.identifier.contains(memo.id.uuidString)
                 }
-                print("🔔 関連する通知が残っているか: \(relatedNotifications.count > 0)")
+                print("🔔 キャンセル前の関連通知数: \(relatedNotificationsBefore.count)")
+                
+                // 通知をキャンセル
+                UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers)
+                
+                // キャンセル後の保留中通知を確認
+                UNUserNotificationCenter.current().getPendingNotificationRequests { requestsAfter in
+                    DispatchQueue.main.async {
+                        print("🔔 キャンセル後の保留中通知数: \(requestsAfter.count)")
+                        let relatedNotificationsAfter = requestsAfter.filter { request in
+                            request.identifier.contains(memo.id.uuidString)
+                        }
+                        print("🔔 キャンセル後の関連通知数: \(relatedNotificationsAfter.count)")
+                        print("🔔 関連する通知が残っているか: \(relatedNotificationsAfter.count > 0)")
+                        
+                        if relatedNotificationsAfter.count > 0 {
+                            print("🔔 残っている通知ID: \(relatedNotificationsAfter.map { $0.identifier })")
+                        }
+                    }
+                }
             }
         }
     }
     
     private func scheduleSnoozeNotification(for memo: Memo, at date: Date, snoozeCount: Int) {
         // 上限100回まで
-        guard snoozeCount <= 100 else { return }
+        guard snoozeCount <= 100 else { 
+            print("🔔 スヌーズ通知上限に達しました: \(snoozeCount)回目")
+            return 
+        }
+        
+        print("🔔 スヌーズ通知スケジュール開始: \(memo.title)")
+        print("🔔 スヌーズ回数: \(snoozeCount)/100回目")
+        print("🔔 スヌーズ通知日時: \(date)")
+        print("🔔 現在日時: \(Date())")
+        print("🔔 スヌーズ通知日時は未来か: \(date > Date())")
+        
+        // 過去の日時の場合はスケジュールしない
+        if date <= Date() {
+            print("🔔 スヌーズ通知日時が過去のためスケジュールしません")
+            return
+        }
         
         let content = UNMutableNotificationContent()
         content.title = "SmartMemo - スヌーズ (\(snoozeCount)/100回目)"
