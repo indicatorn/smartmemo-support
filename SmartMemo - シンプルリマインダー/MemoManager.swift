@@ -304,8 +304,12 @@ class MemoManager: ObservableObject {
         
         // スヌーズ間隔が設定されている場合、スヌーズ通知もスケジュール
         if let snoozeInterval = memo.snoozeInterval.timeInterval, memo.snoozeInterval != .none {
+            print("🔔 スヌーズ通知スケジュール条件: 間隔=\(memo.snoozeInterval), 時間=\(snoozeInterval)")
             let snoozeDate = notificationDate.addingTimeInterval(snoozeInterval)
+            print("🔔 スヌーズ通知日時計算: \(notificationDate) + \(snoozeInterval) = \(snoozeDate)")
             scheduleSnoozeNotification(for: memo, at: snoozeDate, snoozeCount: 1)
+        } else {
+            print("🔔 スヌーズ通知スケジュール条件: 間隔=\(memo.snoozeInterval), スケジュールしない")
         }
         
         // 繰り返し通知の設定
