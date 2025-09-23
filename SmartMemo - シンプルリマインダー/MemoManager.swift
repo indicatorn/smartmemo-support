@@ -292,8 +292,23 @@ class MemoManager: ObservableObject {
         }
     }
     
+    func checkNotificationPermission() {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                print("通知設定状態:")
+                print("- 認証状態: \(settings.authorizationStatus.rawValue)")
+                print("- アラート設定: \(settings.alertSetting.rawValue)")
+                print("- サウンド設定: \(settings.soundSetting.rawValue)")
+                print("- バッジ設定: \(settings.badgeSetting.rawValue)")
+            }
+        }
+    }
+    
     func scheduleNotification(for memo: Memo) {
         guard let notificationDate = memo.notificationDate else { return }
+        
+        // 通知権限を確認
+        checkNotificationPermission()
         
         // 初回通知をスケジュール
         scheduleInitialNotification(for: memo, at: notificationDate)
@@ -311,6 +326,12 @@ class MemoManager: ObservableObject {
     }
     
     private func scheduleInitialNotification(for memo: Memo, at date: Date) {
+        // 過去の日時の場合はスケジュールしない
+        if date <= Date() {
+            print("通知日時が過去のためスケジュールしません: \(memo.title) at \(date)")
+            return
+        }
+        
         let content = UNMutableNotificationContent()
         content.title = "SmartMemo"
         content.body = memo.title
