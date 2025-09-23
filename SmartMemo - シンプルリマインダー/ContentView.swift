@@ -492,7 +492,6 @@ struct MemoRowView: View {
                 .frame(width: 44, height: 44)
                 .contentShape(Rectangle())
                 .onTapGesture {
-                    print("メモ選択切り替え実行")
                     memoManager.toggleMemoSelection(memo)
                 }
                 .padding(.leading, 12)
@@ -683,7 +682,6 @@ struct DeletedMemoRowView: View {
                 .frame(width: 44, height: 44)
                 .contentShape(Rectangle())
                 .onTapGesture {
-                    print("削除済みメモボタンタップ: \(memo.title)")
                     memoManager.toggleDeletedMemoSelection(memo)
                 }
                 .padding(.leading, 12)
@@ -762,19 +760,14 @@ struct DeletedMemoRowView: View {
         }
         .padding(.vertical, 12)
         .background(
-            Group {
-                let isSelected = memoManager.isDeletedMemoSelected(memo)
-                print("背景色設定: \(memo.title) - 選択状態: \(isSelected)")
-                return isSelected ? 
-                    Color("AccentBlue").opacity(0.1) : 
-                    Color("WhiteColor")
-            }
+            memoManager.isDeletedMemoSelected(memo) ? 
+                Color("AccentBlue").opacity(0.1) : 
+                Color("WhiteColor")
         )
         .cornerRadius(8)
         .onTapGesture {
             // 編集モード時は何もしない（個別のタップジェスチャーで処理）
             if !isDeletedEditMode {
-                print("削除済みメモ行タップ: \(memo.title)")
                 memoManager.toggleDeletedMemoSelection(memo)
             }
         }

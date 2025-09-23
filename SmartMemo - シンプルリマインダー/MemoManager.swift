@@ -17,11 +17,7 @@ class MemoManager: ObservableObject {
     @Published var genres: [Genre] = Genre.defaultGenres
     @Published var selectedGenre: String = "すべてのメモ"
     @Published var selectedMemos: Set<UUID> = []
-    @Published var selectedDeletedMemos: Set<UUID> = [] {
-        didSet {
-            print("selectedDeletedMemos が変更されました: \(selectedDeletedMemos.count)個選択中")
-        }
-    }
+    @Published var selectedDeletedMemos: Set<UUID> = []
     
     private let userDefaults = UserDefaults.standard
     private let memosKey = "SavedMemos"
@@ -698,15 +694,11 @@ class MemoManager: ObservableObject {
     
     // MARK: - 削除済みメモ選択機能
     func toggleDeletedMemoSelection(_ memo: Memo) {
-        print("削除済みメモ選択切り替え: \(memo.title)")
         if selectedDeletedMemos.contains(memo.id) {
             selectedDeletedMemos.remove(memo.id)
-            print("選択解除: \(memo.title)")
         } else {
             selectedDeletedMemos.insert(memo.id)
-            print("選択: \(memo.title)")
         }
-        print("現在の選択数: \(selectedDeletedMemos.count)")
         
         // UI更新を強制的にトリガー
         DispatchQueue.main.async {
@@ -715,11 +707,7 @@ class MemoManager: ObservableObject {
     }
     
     func isDeletedMemoSelected(_ memo: Memo) -> Bool {
-        let isSelected = selectedDeletedMemos.contains(memo.id)
-        print("削除済みメモ選択状態確認: \(memo.title) - \(isSelected) (選択中: \(selectedDeletedMemos.count)個)")
-        print("選択中のID一覧: \(selectedDeletedMemos)")
-        print("現在のメモID: \(memo.id)")
-        return isSelected
+        return selectedDeletedMemos.contains(memo.id)
     }
     
     func clearDeletedMemoSelection() {
