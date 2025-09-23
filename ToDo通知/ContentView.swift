@@ -30,7 +30,7 @@ struct ContentView: View {
                     
                     
                 }
-                .background(Color(red: 0.95, green: 0.95, blue: 0.95))
+                .background(Color("BackgroundColor"))
                 .navigationBarHidden(true)
             }
             .offset(x: showingSideMenu ? 280 : 0)
@@ -172,7 +172,7 @@ struct ContentView: View {
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 15)
-        .background(Color(red: 0.7, green: 0.85, blue: 1.0))
+        .background(Color("HeaderColor"))
     }
     
     // MARK: - フローティングアクションボタン（新規メモ作成）
@@ -190,7 +190,7 @@ struct ContentView: View {
                 .font(.system(size: 28, weight: .medium))
                 .foregroundColor(.white)
                 .frame(width: 64, height: 64)
-                .background(Color(red: 0.0, green: 0.478, blue: 1.0))
+                .background(Color("AccentBlue"))
                 .clipShape(Circle())
                 .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
         }
@@ -231,7 +231,7 @@ struct ContentView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
-        .background(Color.white)
+        .background(Color("WhiteColor"))
         .overlay(
             Rectangle()
                 .frame(height: 1)
@@ -245,38 +245,48 @@ struct ContentView: View {
     private var memoListView: some View {
         Group {
             if memoManager.showingDeletedItems {
-                List {
-                    ForEach(memoManager.filteredDeletedMemos, id: \.id) { memo in
-                        DeletedMemoRowView(memo: memo, memoManager: memoManager, isDeletedEditMode: $isDeletedEditMode)
-                            .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
-                            .listRowSeparator(.visible)
-                            .background(Color.clear)
+                ZStack {
+                    Color("BackgroundColor")
+                        .ignoresSafeArea()
+                    
+                    List {
+                        ForEach(memoManager.filteredDeletedMemos, id: \.id) { memo in
+                            DeletedMemoRowView(memo: memo, memoManager: memoManager, isDeletedEditMode: $isDeletedEditMode)
+                                .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+                                .listRowSeparator(.visible)
+                                .listRowBackground(Color.clear)
+                        }
                     }
+                    .listStyle(PlainListStyle())
+                    .scrollContentBackground(.hidden)
                 }
-                .listStyle(PlainListStyle())
-                .background(Color(red: 0.95, green: 0.95, blue: 0.95))
                 .padding(.top, 8)
                 .padding(.bottom, 80) // フローティングボタンとの重なりを避ける
             } else {
-                List {
-                    ForEach(memoManager.sortedMemos, id: \.id) { memo in
-                        MemoRowView(
-                            memo: memo, 
-                            memoManager: memoManager,
-                            isEditMode: isEditMode
-                        ) {
-                            if !isEditMode {
-                                showingEditMemo = memo
+                ZStack {
+                    Color("BackgroundColor")
+                        .ignoresSafeArea()
+                    
+                    List {
+                        ForEach(memoManager.sortedMemos, id: \.id) { memo in
+                            MemoRowView(
+                                memo: memo, 
+                                memoManager: memoManager,
+                                isEditMode: isEditMode
+                            ) {
+                                if !isEditMode {
+                                    showingEditMemo = memo
+                                }
                             }
+                            .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+                            .listRowSeparator(.visible)
+                            .listRowBackground(Color.clear)
                         }
-                        .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
-                        .listRowSeparator(.visible)
-                        .background(Color.clear)
+                        .onMove(perform: isEditMode ? moveMemos : nil)
                     }
-                    .onMove(perform: isEditMode ? moveMemos : nil)
+                    .listStyle(PlainListStyle())
+                    .scrollContentBackground(.hidden)
                 }
-                .listStyle(PlainListStyle())
-                .background(Color(red: 0.95, green: 0.95, blue: 0.95))
                 .padding(.top, 8)
                 .padding(.bottom, 80) // フローティングボタンとの重なりを避ける
             }
@@ -310,7 +320,7 @@ struct ContentView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
-        .background(Color.white)
+        .background(Color("WhiteColor"))
         .cornerRadius(8)
     }
     
@@ -355,7 +365,7 @@ struct ContentView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
-        .background(Color.white)
+        .background(Color("WhiteColor"))
         .cornerRadius(8)
     }
     
@@ -401,7 +411,7 @@ struct ContentView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
-        .background(Color.white)
+        .background(Color("WhiteColor"))
         .cornerRadius(8)
     }
     
@@ -469,7 +479,7 @@ struct MemoRowView: View {
                             .foregroundColor(Color.gray)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 2)
-                            .background(Color.white)
+                            .background(Color("WhiteColor"))
                             .cornerRadius(4)
                     }
                 }
@@ -529,8 +539,8 @@ struct MemoRowView: View {
             Group {
                 let isSelected = memoManager.isMemoSelected(memo)
                 return isSelected ? 
-                    Color(red: 0.0, green: 0.478, blue: 1.0).opacity(0.1) : 
-                    Color.white
+                    Color("AccentBlue").opacity(0.1) : 
+                    Color("WhiteColor")
             }
         )
         .cornerRadius(8)
@@ -599,7 +609,7 @@ struct DeletedMemoRowView: View {
                             .foregroundColor(Color.gray)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 2)
-                            .background(Color.white)
+                            .background(Color("WhiteColor"))
                             .cornerRadius(4)
                     }
                 }
@@ -618,8 +628,8 @@ struct DeletedMemoRowView: View {
                 let isSelected = memoManager.isDeletedMemoSelected(memo)
                 print("背景色設定: \(memo.title) - 選択状態: \(isSelected)")
                 return isSelected ? 
-                    Color(red: 0.0, green: 0.478, blue: 1.0).opacity(0.1) : 
-                    Color.white.opacity(0.8)
+                    Color("AccentBlue").opacity(0.1) : 
+                    Color("WhiteColor").opacity(0.8)
             }
         )
         .cornerRadius(8)

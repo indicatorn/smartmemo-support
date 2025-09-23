@@ -30,7 +30,7 @@ struct SideMenuView: View {
             Spacer()
         }
         .frame(width: 280)
-        .background(Color(red: 0.95, green: 0.95, blue: 0.95))
+        .background(Color("BackgroundColor"))
         .edgesIgnoringSafeArea(.vertical)
     }
     
@@ -52,7 +52,7 @@ struct SideMenuView: View {
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 20)
-        .background(Color(red: 0.95, green: 0.95, blue: 0.95))
+        .background(Color("BackgroundColor"))
     }
     
     // MARK: - 削除済み項目セクション

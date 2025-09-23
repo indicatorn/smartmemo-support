@@ -52,9 +52,9 @@ struct AddEditMemoView: View {
                     contentView
                         .padding(.bottom, 20)
                 }
-                .background(Color(red: 0.95, green: 0.95, blue: 0.95))
+                .background(Color("BackgroundColor"))
             }
-            .background(Color(red: 0.95, green: 0.95, blue: 0.95))
+                .background(Color("BackgroundColor"))
             .navigationBarHidden(true)
         }
     }
@@ -65,26 +65,26 @@ struct AddEditMemoView: View {
             Button("キャンセル") {
                 presentationMode.wrappedValue.dismiss()
             }
-            .foregroundColor(.black)
+            .foregroundColor(Color("TextColor"))
             
             Spacer()
             
             Text(editingMemo == nil ? "新規メモ" : "メモを編集")
                 .font(.title2)
                 .fontWeight(.bold)
-                .foregroundColor(.black)
+                .foregroundColor(Color("TextColor"))
             
             Spacer()
             
             Button("保存") {
                 saveMemo()
             }
-            .foregroundColor(.black)
+            .foregroundColor(Color("TextColor"))
             .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 15)
-        .background(Color(red: 0.7, green: 0.85, blue: 1.0))
+        .background(Color("HeaderColor"))
     }
     
     // MARK: - コンテンツビュー
@@ -94,11 +94,12 @@ struct AddEditMemoView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text("メモ内容")
                     .font(.headline)
-                    .foregroundColor(Color.black)
+                    .foregroundColor(Color("TextColor"))
                 
                 TextField("メモを入力してください", text: $title, axis: .vertical)
                     .frame(minHeight: 80, maxHeight: 120)
                     .font(.system(size: 16))
+                    .foregroundColor(Color("TextColor"))
                     .padding(8)
                     .lineLimit(5...10)
                     .focused($isTextFieldFocused)
@@ -110,7 +111,7 @@ struct AddEditMemoView: View {
                             }
                         }
                     }
-                .background(Color(red: 0.95, green: 0.95, blue: 0.95))
+                .background(Color("BackgroundColor"))
                 .cornerRadius(12)
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
@@ -122,8 +123,8 @@ struct AddEditMemoView: View {
             VStack(alignment: .leading, spacing: 12) {
                 Toggle("通知を設定", isOn: $hasNotification)
                     .font(.headline)
-                    .foregroundColor(Color.black)
-                    .tint(Color(red: 0.0, green: 0.478, blue: 1.0))
+                    .foregroundColor(Color("TextColor"))
+                    .tint(Color("AccentBlue"))
                 
                 if hasNotification {
                     VStack(spacing: 12) {
@@ -137,6 +138,8 @@ struct AddEditMemoView: View {
                                 .datePickerStyle(CompactDatePickerStyle())
                                 .labelsHidden()
                                 .environment(\.locale, Locale(identifier: "ja_JP"))
+                                .accentColor(Color("AccentBlue"))
+                                .colorScheme(.light)
                         }
                         
                         // 通知間隔
@@ -151,6 +154,8 @@ struct AddEditMemoView: View {
                                 }
                             }
                             .pickerStyle(SegmentedPickerStyle())
+                            .accentColor(Color("AccentBlue"))
+                            .colorScheme(.light)
                         }
                         
                         // スヌーズ間隔
@@ -165,10 +170,12 @@ struct AddEditMemoView: View {
                                 }
                             }
                             .pickerStyle(SegmentedPickerStyle())
+                            .accentColor(Color("AccentBlue"))
+                            .colorScheme(.light)
                         }
                     }
                     .padding()
-                    .background(Color(red: 0.95, green: 0.95, blue: 0.95))
+                    .background(Color("BackgroundColor"))
                     .cornerRadius(8)
                 }
             }
@@ -177,7 +184,7 @@ struct AddEditMemoView: View {
             VStack(alignment: .leading, spacing: 12) {
                 Text("ジャンル")
                     .font(.headline)
-                    .foregroundColor(Color.black)
+                    .foregroundColor(Color("TextColor"))
                 
                 VStack(alignment: .leading, spacing: 8) {
                     Picker("ジャンル", selection: $selectedGenre) {
@@ -197,8 +204,10 @@ struct AddEditMemoView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 12)
                     .padding(.vertical, 12)
-                    .background(Color(red: 0.95, green: 0.95, blue: 0.95))
+                    .background(Color("BackgroundColor"))
                     .cornerRadius(12)
+                    .accentColor(Color("AccentBlue"))
+                    .colorScheme(.light)
                     .overlay(
                         RoundedRectangle(cornerRadius: 12)
                             .stroke(Color.gray.opacity(0.3), lineWidth: 1)
