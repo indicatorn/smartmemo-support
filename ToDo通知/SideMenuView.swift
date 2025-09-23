@@ -48,16 +48,6 @@ struct SideMenuView: View {
                     .foregroundColor(Color.black)
                 
                 Spacer()
-                
-                Button(action: {
-                    withAnimation(.easeInOut(duration: 0.3)) {
-                        isShowing = false
-                    }
-                }) {
-                    Image(systemName: "xmark")
-                        .font(.system(size: 18))
-                        .foregroundColor(Color.gray)
-                }
             }
         }
         .padding(.horizontal, 20)

@@ -45,10 +45,12 @@ struct AddEditMemoView: View {
                 // ヘッダー
                 headerView
                 
-                // コンテンツ
-                contentView
-                
-                Spacer()
+                // コンテンツ（ScrollViewで囲む）
+                ScrollView {
+                    contentView
+                        .padding(.bottom, 20)
+                }
+                .background(Color(red: 0.95, green: 0.95, blue: 0.95))
             }
             .background(Color(red: 0.95, green: 0.95, blue: 0.95))
             .navigationBarHidden(true)
@@ -193,8 +195,6 @@ struct AddEditMemoView: View {
                     )
                 }
             }
-            
-            Spacer()
         }
         .padding(.horizontal, 20)
         .padding(.top, 20)
