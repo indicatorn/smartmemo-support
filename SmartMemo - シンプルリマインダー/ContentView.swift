@@ -428,6 +428,7 @@ struct ContentView: View {
             Spacer()
             
             Button(action: {
+                print("📱 アクションバー削除実行: \(memoManager.selectedMemos.count)個のメモ")
                 // 選択されたメモを削除済みに移動
                 memoManager.bulkDeleteSelectedMemos()
             }) {
@@ -582,6 +583,7 @@ struct MemoRowView: View {
             // 編集モード時の削除ボタン
             if isEditMode {
                 Button(action: {
+                    print("📱 編集モード削除ボタン実行: \(memo.title)")
                     memoManager.deleteMemo(memo)
                 }) {
                     Image(systemName: "trash.fill")
@@ -610,6 +612,7 @@ struct MemoRowView: View {
         .swipeActions(edge: .trailing) {
             if !isEditMode {
                 Button("削除") {
+                    print("📱 スワイプ削除実行: \(memo.title)")
                     memoManager.deleteMemo(memo)
                 }
                 .tint(.red)

@@ -157,6 +157,9 @@ class MemoManager: ObservableObject {
     
     func deleteMemo(_ memo: Memo) {
         if let index = memos.firstIndex(where: { $0.id == memo.id }) {
+            print("🗑️ メモ削除開始: \(memo.title)")
+            print("🗑️ 通知設定: 間隔=\(memo.notificationInterval), スヌーズ=\(memo.snoozeInterval)")
+            
             var deletedMemo = memos[index]
             deletedMemo.isDeleted = true
             deletedMemos.append(deletedMemo)
@@ -201,6 +204,9 @@ class MemoManager: ObservableObject {
     
     func permanentlyDelete(_ memo: Memo) {
         if let index = deletedMemos.firstIndex(where: { $0.id == memo.id }) {
+            print("🗑️ 完全削除開始: \(memo.title)")
+            print("🗑️ 通知設定: 間隔=\(memo.notificationInterval), スヌーズ=\(memo.snoozeInterval)")
+            
             deletedMemos.remove(at: index)
             
             // 選択状態からも削除
@@ -413,6 +419,8 @@ class MemoManager: ObservableObject {
     }
     
     func cancelNotification(for memo: Memo) {
+        print("🔔 通知キャンセル開始: \(memo.title)")
+        
         // 基本の通知ID
         var identifiers = [memo.id.uuidString, "\(memo.id.uuidString)_repeat"]
         
@@ -426,7 +434,21 @@ class MemoManager: ObservableObject {
             identifiers.append("\(memo.id.uuidString)_snooze_\(i)")
         }
         
+        print("🔔 キャンセル対象ID数: \(identifiers.count)")
+        print("🔔 キャンセル対象ID: \(identifiers.prefix(5))...")
+        
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers)
+        
+        // キャンセル後の保留中通知を確認
+        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+            DispatchQueue.main.async {
+                print("🔔 キャンセル後の保留中通知数: \(requests.count)")
+                let relatedNotifications = requests.filter { request in
+                    request.identifier.contains(memo.id.uuidString)
+                }
+                print("🔔 関連する通知が残っているか: \(relatedNotifications.count > 0)")
+            }
+        }
     }
     
     private func scheduleSnoozeNotification(for memo: Memo, at date: Date, snoozeCount: Int) {
@@ -650,8 +672,10 @@ class MemoManager: ObservableObject {
     
     // MARK: - 選択されたメモを一括削除
     func bulkDeleteSelectedMemos() {
+        print("📱 一括削除開始: \(selectedMemos.count)個のメモ")
         let selectedMemosList = memos.filter { selectedMemos.contains($0.id) }
         for memo in selectedMemosList {
+            print("📱 一括削除対象: \(memo.title)")
             deleteMemo(memo)
         }
         selectedMemos.removeAll()
