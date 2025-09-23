@@ -9,7 +9,7 @@ import SwiftUI
 import UserNotifications
 
 @main
-struct ToDo通知: App {
+struct SmartMemoApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     var body: some Scene {

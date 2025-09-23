@@ -282,10 +282,12 @@ class MemoManager: ObservableObject {
     
     func requestNotificationPermission() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
-            if granted {
-                print("通知の許可が得られました")
-            } else {
-                print("通知の許可が得られませんでした")
+            DispatchQueue.main.async {
+                if granted {
+                    print("通知の許可が得られました")
+                } else {
+                    print("通知の許可が得られませんでした: \(error?.localizedDescription ?? "不明なエラー")")
+                }
             }
         }
     }
@@ -326,10 +328,12 @@ class MemoManager: ObservableObject {
         let request = UNNotificationRequest(identifier: memo.id.uuidString, content: content, trigger: trigger)
         
         UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                print("通知のスケジュールに失敗しました: \(error)")
-            } else {
-                print("通知をスケジュールしました: \(memo.title)")
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("通知のスケジュールに失敗しました: \(error)")
+                } else {
+                    print("通知をスケジュールしました: \(memo.title) at \(date)")
+                }
             }
         }
     }

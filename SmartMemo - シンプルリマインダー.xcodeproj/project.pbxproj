@@ -24,9 +24,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		C3C25A012E6BCABD00A4CAB6 /* ToDo通知.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ToDo通知.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		C3C25A0F2E6BCABE00A4CAB6 /* ToDo通知Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ToDo通知Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		C3C25A192E6BCABE00A4CAB6 /* ToDo通知UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ToDo通知UITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C3C25A012E6BCABD00A4CAB6 /* SmartMemo - シンプルリマインダー.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SmartMemo - シンプルリマインダー.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C3C25A0F2E6BCABE00A4CAB6 /* SmartMemo - シンプルリマインダーTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SmartMemo - シンプルリマインダーTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C3C25A192E6BCABE00A4CAB6 /* SmartMemo - シンプルリマインダーUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SmartMemo - シンプルリマインダーUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -85,9 +85,9 @@
 		C3C25A022E6BCABD00A4CAB6 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C3C25A012E6BCABD00A4CAB6 /* ToDo通知.app */,
-				C3C25A0F2E6BCABE00A4CAB6 /* ToDo通知Tests.xctest */,
-				C3C25A192E6BCABE00A4CAB6 /* ToDo通知UITests.xctest */,
+				C3C25A012E6BCABD00A4CAB6 /* SmartMemo - シンプルリマインダー.app */,
+				C3C25A0F2E6BCABE00A4CAB6 /* SmartMemo - シンプルリマインダーTests.xctest */,
+				C3C25A192E6BCABE00A4CAB6 /* SmartMemo - シンプルリマインダーUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -95,9 +95,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C3C25A002E6BCABD00A4CAB6 /* ToDo通知 */ = {
+		C3C25A002E6BCABD00A4CAB6 /* SmartMemo - シンプルリマインダー */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C3C25A232E6BCABE00A4CAB6 /* Build configuration list for PBXNativeTarget "ToDo通知" */;
+			buildConfigurationList = C3C25A232E6BCABE00A4CAB6 /* Build configuration list for PBXNativeTarget "SmartMemo - シンプルリマインダー" */;
 			buildPhases = (
 				C3C259FD2E6BCABD00A4CAB6 /* Sources */,
 				C3C259FE2E6BCABD00A4CAB6 /* Frameworks */,
@@ -114,12 +114,12 @@
 			packageProductDependencies = (
 			);
 			productName = "ToDo通知";
-			productReference = C3C25A012E6BCABD00A4CAB6 /* ToDo通知.app */;
+			productReference = C3C25A012E6BCABD00A4CAB6 /* SmartMemo - シンプルリマインダー.app */;
 			productType = "com.apple.product-type.application";
 		};
-		C3C25A0E2E6BCABE00A4CAB6 /* ToDo通知Tests */ = {
+		C3C25A0E2E6BCABE00A4CAB6 /* SmartMemo - シンプルリマインダーTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C3C25A262E6BCABE00A4CAB6 /* Build configuration list for PBXNativeTarget "ToDo通知Tests" */;
+			buildConfigurationList = C3C25A262E6BCABE00A4CAB6 /* Build configuration list for PBXNativeTarget "SmartMemo - シンプルリマインダーTests" */;
 			buildPhases = (
 				C3C25A0B2E6BCABE00A4CAB6 /* Sources */,
 				C3C25A0C2E6BCABE00A4CAB6 /* Frameworks */,
@@ -133,16 +133,16 @@
 			fileSystemSynchronizedGroups = (
 				C3C25A122E6BCABE00A4CAB6 /* ToDo通知Tests */,
 			);
-			name = "ToDo通知Tests";
+			name = "SmartMemo - シンプルリマインダーTests";
 			packageProductDependencies = (
 			);
 			productName = "Notification memo1Tests";
-			productReference = C3C25A0F2E6BCABE00A4CAB6 /* ToDo通知Tests.xctest */;
+			productReference = C3C25A0F2E6BCABE00A4CAB6 /* SmartMemo - シンプルリマインダーTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		C3C25A182E6BCABE00A4CAB6 /* ToDo通知UITests */ = {
+		C3C25A182E6BCABE00A4CAB6 /* SmartMemo - シンプルリマインダーUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C3C25A292E6BCABE00A4CAB6 /* Build configuration list for PBXNativeTarget "ToDo通知UITests" */;
+			buildConfigurationList = C3C25A292E6BCABE00A4CAB6 /* Build configuration list for PBXNativeTarget "SmartMemo - シンプルリマインダーUITests" */;
 			buildPhases = (
 				C3C25A152E6BCABE00A4CAB6 /* Sources */,
 				C3C25A162E6BCABE00A4CAB6 /* Frameworks */,
@@ -156,11 +156,11 @@
 			fileSystemSynchronizedGroups = (
 				C3C25A1C2E6BCABE00A4CAB6 /* ToDo通知UITests */,
 			);
-			name = "ToDo通知UITests";
+			name = "SmartMemo - シンプルリマインダーUITests";
 			packageProductDependencies = (
 			);
 			productName = "Notification memo1UITests";
-			productReference = C3C25A192E6BCABE00A4CAB6 /* ToDo通知UITests.xctest */;
+			productReference = C3C25A192E6BCABE00A4CAB6 /* SmartMemo - シンプルリマインダーUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -186,7 +186,7 @@
 					};
 				};
 			};
-			buildConfigurationList = C3C259FC2E6BCABD00A4CAB6 /* Build configuration list for PBXProject "ToDo通知" */;
+			buildConfigurationList = C3C259FC2E6BCABD00A4CAB6 /* Build configuration list for PBXProject "SmartMemo - シンプルリマインダー" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -200,9 +200,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C3C25A002E6BCABD00A4CAB6 /* ToDo通知 */,
-				C3C25A0E2E6BCABE00A4CAB6 /* ToDo通知Tests */,
-				C3C25A182E6BCABE00A4CAB6 /* ToDo通知UITests */,
+				C3C25A002E6BCABD00A4CAB6 /* SmartMemo - シンプルリマインダー */,
+				C3C25A0E2E6BCABE00A4CAB6 /* SmartMemo - シンプルリマインダーTests */,
+				C3C25A182E6BCABE00A4CAB6 /* SmartMemo - シンプルリマインダーUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -258,12 +258,12 @@
 /* Begin PBXTargetDependency section */
 		C3C25A112E6BCABE00A4CAB6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C3C25A002E6BCABD00A4CAB6 /* ToDo通知 */;
+			target = C3C25A002E6BCABD00A4CAB6 /* SmartMemo - シンプルリマインダー */;
 			targetProxy = C3C25A102E6BCABE00A4CAB6 /* PBXContainerItemProxy */;
 		};
 		C3C25A1B2E6BCABE00A4CAB6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C3C25A002E6BCABD00A4CAB6 /* ToDo通知 */;
+			target = C3C25A002E6BCABD00A4CAB6 /* SmartMemo - シンプルリマインダー */;
 			targetProxy = C3C25A1A2E6BCABE00A4CAB6 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -395,7 +395,7 @@
 				DEVELOPMENT_TEAM = 5DJ89U73Z7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "SmartMemo";
+				INFOPLIST_KEY_CFBundleDisplayName = SmartMemo;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -412,7 +412,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.3;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.keito.todonotification;
+				PRODUCT_BUNDLE_IDENTIFIER = com.keito.smartmemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				REGISTER_APP_GROUPS = YES;
@@ -437,7 +437,7 @@
 				DEVELOPMENT_TEAM = 5DJ89U73Z7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "SmartMemo";
+				INFOPLIST_KEY_CFBundleDisplayName = SmartMemo;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -454,7 +454,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.3;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.keito.todonotification;
+				PRODUCT_BUNDLE_IDENTIFIER = com.keito.smartmemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				REGISTER_APP_GROUPS = YES;
@@ -484,7 +484,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ToDo通知.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ToDo通知";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SmartMemo - シンプルリマインダー.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SmartMemo - シンプルリマインダー";
 				XROS_DEPLOYMENT_TARGET = 2.5;
 			};
 			name = Debug;
@@ -506,7 +506,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ToDo通知.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ToDo通知";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SmartMemo - シンプルリマインダー.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SmartMemo - シンプルリマインダー";
 				XROS_DEPLOYMENT_TARGET = 2.5;
 			};
 			name = Release;
@@ -556,7 +556,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C3C259FC2E6BCABD00A4CAB6 /* Build configuration list for PBXProject "ToDo通知" */ = {
+		C3C259FC2E6BCABD00A4CAB6 /* Build configuration list for PBXProject "SmartMemo - シンプルリマインダー" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C3C25A212E6BCABE00A4CAB6 /* Debug */,
@@ -565,7 +565,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C3C25A232E6BCABE00A4CAB6 /* Build configuration list for PBXNativeTarget "ToDo通知" */ = {
+		C3C25A232E6BCABE00A4CAB6 /* Build configuration list for PBXNativeTarget "SmartMemo - シンプルリマインダー" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C3C25A242E6BCABE00A4CAB6 /* Debug */,
@@ -574,7 +574,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C3C25A262E6BCABE00A4CAB6 /* Build configuration list for PBXNativeTarget "ToDo通知Tests" */ = {
+		C3C25A262E6BCABE00A4CAB6 /* Build configuration list for PBXNativeTarget "SmartMemo - シンプルリマインダーTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C3C25A272E6BCABE00A4CAB6 /* Debug */,
@@ -583,7 +583,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C3C25A292E6BCABE00A4CAB6 /* Build configuration list for PBXNativeTarget "ToDo通知UITests" */ = {
+		C3C25A292E6BCABE00A4CAB6 /* Build configuration list for PBXNativeTarget "SmartMemo - シンプルリマインダーUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C3C25A2A2E6BCABE00A4CAB6 /* Debug */,
