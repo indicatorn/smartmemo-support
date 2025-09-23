@@ -325,6 +325,7 @@ struct ContentView: View {
         HStack {
             Button(action: {
                 // 全て復元
+                print("🔄 全復元ボタンタップ")
                 memoManager.restoreAllDeletedMemos()
                 isDeletedEditMode = false
             }) {
@@ -355,6 +356,7 @@ struct ContentView: View {
     private var selectedDeletedMemosActionView: some View {
         HStack {
             Button(action: {
+                print("🔄 一括復元ボタンタップ")
                 memoManager.bulkRestoreSelectedDeletedMemos()
             }) {
                 Text("復元")

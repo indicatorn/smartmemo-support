@@ -651,8 +651,10 @@ class MemoManager: ObservableObject {
     }
     
     func bulkRestoreSelectedDeletedMemos() {
+        print("🔄 一括復元開始: \(selectedDeletedMemos.count)個のメモ")
         let selectedMemos = deletedMemos.filter { selectedDeletedMemos.contains($0.id) }
         for memo in selectedMemos {
+            print("🔄 一括復元対象: \(memo.title)")
             restoreMemo(memo)
         }
         selectedDeletedMemos.removeAll()
@@ -668,8 +670,10 @@ class MemoManager: ObservableObject {
     
     // MARK: - 全ての削除済みメモを復元
     func restoreAllDeletedMemos() {
+        print("🔄 全復元開始: \(filteredDeletedMemos.count)個のメモ")
         let allDeletedMemos = filteredDeletedMemos
         for memo in allDeletedMemos {
+            print("🔄 全復元対象: \(memo.title)")
             restoreMemo(memo)
         }
     }
