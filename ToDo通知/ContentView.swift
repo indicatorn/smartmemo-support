@@ -732,20 +732,44 @@ struct GenreSelectionView: View {
     @ObservedObject var memoManager: MemoManager
     @Binding var showingGenreSelection: Bool
     
+    init(memoManager: MemoManager, showingGenreSelection: Binding<Bool>) {
+        self.memoManager = memoManager
+        self._showingGenreSelection = showingGenreSelection
+        
+        // ナビゲーションバーの色を設定
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = UIColor.white
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.black]
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.black]
+        
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+    }
+    
     var body: some View {
         NavigationView {
-            List {
-                // メモ（最初に表示）
-                if let memoGenre = memoManager.genres.first(where: { $0.name == "メモ" }) {
-                    genreSelectionRow(for: memoGenre)
-                }
+            ZStack {
+                Color("BackgroundColor")
+                    .ignoresSafeArea()
                 
-                // ユーザーが作成したジャンル（メモ以外のデフォルトでないジャンル）
-                ForEach(memoManager.genres.filter { genre in
-                    !genre.isDefault && genre.name != "メモ"
-                }) { genre in
-                    genreSelectionRow(for: genre)
+                List {
+                    // メモ（最初に表示）
+                    if let memoGenre = memoManager.genres.first(where: { $0.name == "メモ" }) {
+                        genreSelectionRow(for: memoGenre)
+                            .listRowBackground(Color.white)
+                    }
+                    
+                    // ユーザーが作成したジャンル（メモ以外のデフォルトでないジャンル）
+                    ForEach(memoManager.genres.filter { genre in
+                        !genre.isDefault && genre.name != "メモ"
+                    }) { genre in
+                        genreSelectionRow(for: genre)
+                            .listRowBackground(Color.white)
+                    }
                 }
+                .listStyle(PlainListStyle())
+                .scrollContentBackground(.hidden)
             }
             .navigationTitle("ジャンルを選択")
             .navigationBarTitleDisplayMode(.inline)
@@ -753,6 +777,7 @@ struct GenreSelectionView: View {
                 trailing: Button("キャンセル") {
                     showingGenreSelection = false
                 }
+                .foregroundColor(.black)
             )
         }
     }
@@ -766,16 +791,17 @@ struct GenreSelectionView: View {
         }) {
             HStack {
                 Image(systemName: genreIcon(for: genre.name))
-                    .foregroundColor(.blue)
+                    .foregroundColor(Color("AccentBlue"))
                     .frame(width: 24)
                 
                 Text(genre.name)
-                    .foregroundColor(Color.black)
+                    .foregroundColor(.black)
                 
                 Spacer()
             }
             .padding(.vertical, 4)
             .frame(maxWidth: .infinity, minHeight: 32)
+            .background(Color.white)
             .contentShape(Rectangle())
         }
         .buttonStyle(PlainButtonStyle())
