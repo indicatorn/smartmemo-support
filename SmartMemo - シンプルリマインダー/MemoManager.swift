@@ -325,7 +325,10 @@ class MemoManager: ObservableObject {
         
         // 繰り返し通知の設定
         if let interval = memo.notificationInterval.timeInterval, memo.notificationInterval != .none {
+            print("🔔 繰り返し通知スケジュール条件: 間隔=\(memo.notificationInterval), 時間=\(interval)")
             scheduleRepeatingNotification(for: memo, interval: interval)
+        } else {
+            print("🔔 繰り返し通知スケジュール条件: 間隔=\(memo.notificationInterval), スケジュールしない")
         }
     }
     
@@ -383,8 +386,12 @@ class MemoManager: ObservableObject {
     private func scheduleRepeatingNotification(for memo: Memo, interval: TimeInterval) {
         guard let notificationDate = memo.notificationDate else { return }
         
+        print("🔔 繰り返し通知スケジュール実行: \(memo.title)")
+        print("🔔 繰り返し通知間隔: \(interval)秒")
+        
         // 毎月の場合は特別な処理
         if memo.notificationInterval == .monthly {
+            print("🔔 毎月通知スケジュール実行: \(memo.title)")
             scheduleMonthlyNotification(for: memo, at: notificationDate)
             return
         }
@@ -397,7 +404,15 @@ class MemoManager: ObservableObject {
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: interval, repeats: true)
         let request = UNNotificationRequest(identifier: "\(memo.id.uuidString)_repeat", content: content, trigger: trigger)
         
-        UNUserNotificationCenter.current().add(request)
+        print("🔔 繰り返し通知ID: \(memo.id.uuidString)_repeat")
+        
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("繰り返し通知のスケジュールに失敗しました: \(error)")
+            } else {
+                print("🔔 繰り返し通知スケジュール成功: \(memo.id.uuidString)_repeat")
+            }
+        }
     }
     
     // 毎月の通知をスケジュール（月末日調整付き）
@@ -406,6 +421,9 @@ class MemoManager: ObservableObject {
         let originalDay = calendar.component(.day, from: date)
         let originalHour = calendar.component(.hour, from: date)
         let originalMinute = calendar.component(.minute, from: date)
+        
+        print("🔔 毎月通知スケジュール開始: \(memo.title)")
+        print("🔔 毎月通知対象月数: 12ヶ月")
         
         // 12ヶ月分の通知をスケジュール
         for monthOffset in 1...12 {
@@ -435,7 +453,16 @@ class MemoManager: ObservableObject {
             let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
             let request = UNNotificationRequest(identifier: "\(memo.id.uuidString)_monthly_\(monthOffset)", content: content, trigger: trigger)
             
-            UNUserNotificationCenter.current().add(request)
+            print("🔔 毎月通知ID: \(memo.id.uuidString)_monthly_\(monthOffset)")
+            print("🔔 毎月通知日時: \(finalDate)")
+            
+            UNUserNotificationCenter.current().add(request) { error in
+                if let error = error {
+                    print("毎月通知のスケジュールに失敗しました: \(error)")
+                } else {
+                    print("🔔 毎月通知スケジュール成功: \(memo.id.uuidString)_monthly_\(monthOffset)")
+                }
+            }
         }
     }
     
