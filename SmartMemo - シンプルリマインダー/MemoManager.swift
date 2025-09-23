@@ -196,12 +196,20 @@ class MemoManager: ObservableObject {
     
     func permanentlyDelete(_ memo: Memo) {
         if let index = deletedMemos.firstIndex(where: { $0.id == memo.id }) {
+            print("🗑️ 完全削除実行: \(memo.title)")
+            print("🗑️ 通知設定: 間隔=\(memo.notificationInterval), スヌーズ=\(memo.snoozeInterval)")
+            
+            // 関連する通知をキャンセル
+            cancelNotification(for: memo)
+            
             deletedMemos.remove(at: index)
             
             // 選択状態からも削除
             selectedDeletedMemos.remove(memo.id)
             
             saveMemos()
+            
+            print("🗑️ 完全削除完了: \(memo.title)")
         }
     }
     
@@ -416,6 +424,8 @@ class MemoManager: ObservableObject {
     }
     
     func cancelNotification(for memo: Memo) {
+        print("🔔 通知キャンセル実行: \(memo.title)")
+        
         // 基本の通知ID
         var identifiers = [memo.id.uuidString, "\(memo.id.uuidString)_repeat"]
         
@@ -429,7 +439,22 @@ class MemoManager: ObservableObject {
             identifiers.append("\(memo.id.uuidString)_snooze_\(i)")
         }
         
+        print("🔔 キャンセル対象ID数: \(identifiers.count)")
+        
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers)
+        
+        // キャンセル後の確認
+        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+            DispatchQueue.main.async {
+                let relatedNotifications = requests.filter { request in
+                    request.identifier.contains(memo.id.uuidString)
+                }
+                print("🔔 完全削除後の関連通知数: \(relatedNotifications.count)")
+                if relatedNotifications.count > 0 {
+                    print("🔔 残っている通知ID: \(relatedNotifications.map { $0.identifier })")
+                }
+            }
+        }
     }
     
     private func scheduleSnoozeNotification(for memo: Memo, at date: Date, snoozeCount: Int) {
