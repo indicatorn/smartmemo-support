@@ -110,7 +110,7 @@ class MemoManager: ObservableObject {
         
         memos.append(newMemo)
         
-        if let notificationDate = notificationDate, interval != .none {
+        if let notificationDate = notificationDate {
             scheduleNotification(for: newMemo)
         }
         
@@ -140,7 +140,7 @@ class MemoManager: ObservableObject {
             
             // 既存の通知をキャンセルして新しい通知をスケジュール
             cancelNotification(for: memo)
-            if let notificationDate = notificationDate, interval != .none {
+            if let notificationDate = notificationDate {
                 scheduleNotification(for: memos[index])
             }
             
@@ -187,8 +187,7 @@ class MemoManager: ObservableObject {
             deletedMemos.remove(at: index)
             
             // 通知が設定されている場合は再スケジュール
-            if let notificationDate = restoredMemo.notificationDate, 
-               restoredMemo.notificationInterval != .none,
+            if let notificationDate = restoredMemo.notificationDate,
                notificationDate > Date() {
                 scheduleNotification(for: restoredMemo)
             }
