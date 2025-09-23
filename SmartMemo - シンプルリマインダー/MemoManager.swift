@@ -282,51 +282,16 @@ class MemoManager: ObservableObject {
     func requestNotificationPermission() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             DispatchQueue.main.async {
-                if granted {
-                    print("通知の許可が得られました")
-                } else {
+                if !granted {
                     print("通知の許可が得られませんでした: \(error?.localizedDescription ?? "不明なエラー")")
                 }
             }
         }
     }
     
-    func checkNotificationPermission() {
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
-            DispatchQueue.main.async {
-                print("通知設定状態:")
-                print("- 認証状態: \(settings.authorizationStatus.rawValue)")
-                print("- アラート設定: \(settings.alertSetting.rawValue)")
-                print("- サウンド設定: \(settings.soundSetting.rawValue)")
-                print("- バッジ設定: \(settings.badgeSetting.rawValue)")
-            }
-        }
-    }
-    
-    func checkPendingNotifications() {
-        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
-            DispatchQueue.main.async {
-                print("保留中の通知数: \(requests.count)")
-                for request in requests {
-                    if let trigger = request.trigger as? UNCalendarNotificationTrigger {
-                        print("- 通知: \(request.content.title) - \(request.content.body)")
-                        print("  日時: \(trigger.dateComponents)")
-                    }
-                }
-            }
-        }
-    }
     
     func scheduleNotification(for memo: Memo) {
-        guard let notificationDate = memo.notificationDate else { 
-            print("通知日時が設定されていません: \(memo.title)")
-            return 
-        }
-        
-        print("通知をスケジュール開始: \(memo.title) at \(notificationDate)")
-        
-        // 通知権限を確認
-        checkNotificationPermission()
+        guard let notificationDate = memo.notificationDate else { return }
         
         // 初回通知をスケジュール
         scheduleInitialNotification(for: memo, at: notificationDate)
@@ -341,15 +306,11 @@ class MemoManager: ObservableObject {
         if let interval = memo.notificationInterval.timeInterval, memo.notificationInterval != .none {
             scheduleRepeatingNotification(for: memo, interval: interval)
         }
-        
-        // 保留中の通知を確認
-        checkPendingNotifications()
     }
     
     private func scheduleInitialNotification(for memo: Memo, at date: Date) {
         // 過去の日時の場合はスケジュールしない
         if date <= Date() {
-            print("通知日時が過去のためスケジュールしません: \(memo.title) at \(date)")
             return
         }
         
@@ -370,12 +331,8 @@ class MemoManager: ObservableObject {
         let request = UNNotificationRequest(identifier: memo.id.uuidString, content: content, trigger: trigger)
         
         UNUserNotificationCenter.current().add(request) { error in
-            DispatchQueue.main.async {
-                if let error = error {
-                    print("通知のスケジュールに失敗しました: \(error)")
-                } else {
-                    print("通知をスケジュールしました: \(memo.title) at \(date)")
-                }
+            if let error = error {
+                print("通知のスケジュールに失敗しました: \(error)")
             }
         }
     }
