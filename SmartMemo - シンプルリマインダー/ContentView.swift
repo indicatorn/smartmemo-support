@@ -219,7 +219,7 @@ struct ContentView: View {
             HStack(spacing: 8) {
                 Image(systemName: "info.circle")
                     .foregroundColor(.gray)
-                Image(systemName: "ellipsis.vertical")
+                Image(systemName: "ellipsis")
                     .foregroundColor(.gray)
             }
             

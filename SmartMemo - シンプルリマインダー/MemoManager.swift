@@ -305,7 +305,12 @@ class MemoManager: ObservableObject {
     }
     
     func scheduleNotification(for memo: Memo) {
-        guard let notificationDate = memo.notificationDate else { return }
+        guard let notificationDate = memo.notificationDate else { 
+            print("通知日時が設定されていません: \(memo.title)")
+            return 
+        }
+        
+        print("通知をスケジュール開始: \(memo.title) at \(notificationDate)")
         
         // 通知権限を確認
         checkNotificationPermission()
