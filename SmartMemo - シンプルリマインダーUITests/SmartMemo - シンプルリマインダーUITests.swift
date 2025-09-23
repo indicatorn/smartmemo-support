@@ -1,6 +1,6 @@
 //
-//  ToDo通知UITests.swift
-//  ToDo通知UITests
+//  SmartMemo - シンプルリマインダーUITests.swift
+//  SmartMemo - シンプルリマインダーUITests
 //
 //  Created by 印出啓人 on 2025/09/06.
 //

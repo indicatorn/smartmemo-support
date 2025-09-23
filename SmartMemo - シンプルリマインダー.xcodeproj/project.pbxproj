@@ -12,14 +12,14 @@
 			containerPortal = C3C259F92E6BCABD00A4CAB6 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = C3C25A002E6BCABD00A4CAB6;
-			remoteInfo = "ToDo通知";
+			remoteInfo = "SmartMemo - シンプルリマインダー";
 		};
 		C3C25A1A2E6BCABE00A4CAB6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C3C259F92E6BCABD00A4CAB6 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = C3C25A002E6BCABD00A4CAB6;
-			remoteInfo = "ToDo通知";
+			remoteInfo = "SmartMemo - シンプルリマインダー";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -30,19 +30,19 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		C3C25A032E6BCABD00A4CAB6 /* ToDo通知 */ = {
+		C3C25A032E6BCABD00A4CAB6 /* SmartMemo - シンプルリマインダー */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "ToDo通知";
+			path = "SmartMemo - シンプルリマインダー";
 			sourceTree = "<group>";
 		};
-		C3C25A122E6BCABE00A4CAB6 /* ToDo通知Tests */ = {
+		C3C25A122E6BCABE00A4CAB6 /* SmartMemo - シンプルリマインダーTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "ToDo通知Tests";
+			path = "SmartMemo - シンプルリマインダーTests";
 			sourceTree = "<group>";
 		};
-		C3C25A1C2E6BCABE00A4CAB6 /* ToDo通知UITests */ = {
+		C3C25A1C2E6BCABE00A4CAB6 /* SmartMemo - シンプルリマインダーUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "ToDo通知UITests";
+			path = "SmartMemo - シンプルリマインダーUITests";
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -75,9 +75,9 @@
 		C3C259F82E6BCABD00A4CAB6 = {
 			isa = PBXGroup;
 			children = (
-				C3C25A032E6BCABD00A4CAB6 /* ToDo通知 */,
-				C3C25A122E6BCABE00A4CAB6 /* ToDo通知Tests */,
-				C3C25A1C2E6BCABE00A4CAB6 /* ToDo通知UITests */,
+				C3C25A032E6BCABD00A4CAB6 /* SmartMemo - シンプルリマインダー */,
+				C3C25A122E6BCABE00A4CAB6 /* SmartMemo - シンプルリマインダーTests */,
+				C3C25A1C2E6BCABE00A4CAB6 /* SmartMemo - シンプルリマインダーUITests */,
 				C3C25A022E6BCABD00A4CAB6 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -108,12 +108,12 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				C3C25A032E6BCABD00A4CAB6 /* ToDo通知 */,
+				C3C25A032E6BCABD00A4CAB6 /* SmartMemo - シンプルリマインダー */,
 			);
 			name = "SmartMemo - シンプルリマインダー";
 			packageProductDependencies = (
 			);
-			productName = "ToDo通知";
+			productName = "SmartMemo - シンプルリマインダー";
 			productReference = C3C25A012E6BCABD00A4CAB6 /* SmartMemo - シンプルリマインダー.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -131,7 +131,7 @@
 				C3C25A112E6BCABE00A4CAB6 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				C3C25A122E6BCABE00A4CAB6 /* ToDo通知Tests */,
+				C3C25A122E6BCABE00A4CAB6 /* SmartMemo - シンプルリマインダーTests */,
 			);
 			name = "SmartMemo - シンプルリマインダーTests";
 			packageProductDependencies = (
@@ -154,7 +154,7 @@
 				C3C25A1B2E6BCABE00A4CAB6 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				C3C25A1C2E6BCABE00A4CAB6 /* ToDo通知UITests */,
+				C3C25A1C2E6BCABE00A4CAB6 /* SmartMemo - シンプルリマインダーUITests */,
 			);
 			name = "SmartMemo - シンプルリマインダーUITests";
 			packageProductDependencies = (
@@ -388,7 +388,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "ToDo通知/ToDo通知.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "SmartMemo - シンプルリマインダー/SmartMemo - シンプルリマインダー.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -430,7 +430,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "ToDo通知/ToDo通知.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "SmartMemo - シンプルリマインダー/SmartMemo - シンプルリマインダー.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -527,7 +527,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_TARGET_NAME = "ToDo通知";
+				TEST_TARGET_NAME = "SmartMemo - シンプルリマインダー";
 				XROS_DEPLOYMENT_TARGET = 2.5;
 			};
 			name = Debug;
@@ -548,7 +548,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_TARGET_NAME = "ToDo通知";
+				TEST_TARGET_NAME = "SmartMemo - シンプルリマインダー";
 				XROS_DEPLOYMENT_TARGET = 2.5;
 			};
 			name = Release;
