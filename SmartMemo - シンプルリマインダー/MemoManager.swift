@@ -190,9 +190,20 @@ class MemoManager: ObservableObject {
             deletedMemos.remove(at: index)
             
             // 通知が設定されている場合は再スケジュール
-            if let notificationDate = restoredMemo.notificationDate,
-               notificationDate > Date() {
-                scheduleNotification(for: restoredMemo)
+            if let notificationDate = restoredMemo.notificationDate {
+                print("🔄 メモ復元: \(restoredMemo.title)")
+                print("🔄 通知日時: \(notificationDate)")
+                print("🔄 現在日時: \(Date())")
+                print("🔄 通知日時は未来か: \(notificationDate > Date())")
+                
+                if notificationDate > Date() {
+                    print("🔄 通知を再スケジュールします")
+                    scheduleNotification(for: restoredMemo)
+                } else {
+                    print("🔄 通知日時が過去のためスケジュールしません")
+                }
+            } else {
+                print("🔄 メモ復元: \(restoredMemo.title) - 通知日時が設定されていません")
             }
             
             // 選択状態からも削除
