@@ -193,6 +193,9 @@ class MemoManager: ObservableObject {
                 scheduleNotification(for: restoredMemo)
             }
             
+            // 選択状態からも削除
+            selectedDeletedMemos.remove(memo.id)
+            
             saveMemos()
         }
     }
@@ -200,6 +203,10 @@ class MemoManager: ObservableObject {
     func permanentlyDelete(_ memo: Memo) {
         if let index = deletedMemos.firstIndex(where: { $0.id == memo.id }) {
             deletedMemos.remove(at: index)
+            
+            // 選択状態からも削除
+            selectedDeletedMemos.remove(memo.id)
+            
             saveMemos()
         }
     }
@@ -233,6 +240,12 @@ class MemoManager: ObservableObject {
     func moveMemos(from source: IndexSet, to destination: Int) {
         // 配列の順序を直接変更
         memos.move(fromOffsets: source, toOffset: destination)
+        saveMemos()
+    }
+    
+    func moveDeletedMemos(from source: IndexSet, to destination: Int) {
+        // 削除済みメモの配列の順序を直接変更
+        deletedMemos.move(fromOffsets: source, toOffset: destination)
         saveMemos()
     }
     
