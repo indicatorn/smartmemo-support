@@ -195,6 +195,10 @@ class MemoManager: ObservableObject {
     }
     
     func permanentlyDelete(_ memo: Memo) {
+        print("🗑️ permanentlyDelete関数が呼ばれました: \(memo.title)")
+        print("🗑️ deletedMemosの数: \(deletedMemos.count)")
+        print("🗑️ 検索対象のメモID: \(memo.id)")
+        
         if let index = deletedMemos.firstIndex(where: { $0.id == memo.id }) {
             print("🗑️ 完全削除実行: \(memo.title)")
             print("🗑️ 通知設定: 間隔=\(memo.notificationInterval), スヌーズ=\(memo.snoozeInterval)")
@@ -210,6 +214,8 @@ class MemoManager: ObservableObject {
             saveMemos()
             
             print("🗑️ 完全削除完了: \(memo.title)")
+        } else {
+            print("🗑️ エラー: 削除済みメモが見つかりませんでした")
         }
     }
     

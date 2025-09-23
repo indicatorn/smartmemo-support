@@ -745,6 +745,7 @@ struct DeletedMemoRowView: View {
             // 編集モード時の完全削除ボタン
             if isDeletedEditMode {
                 Button(action: {
+                    print("🗑️ 編集モード完全削除ボタンタップ: \(memo.title)")
                     memoManager.permanentlyDelete(memo)
                 }) {
                     Image(systemName: "trash.fill")
@@ -775,6 +776,7 @@ struct DeletedMemoRowView: View {
             .tint(.green)
             
             Button("削除") {
+                print("🗑️ スワイプ完全削除ボタンタップ: \(memo.title)")
                 memoManager.permanentlyDelete(memo)
             }
             .tint(.red)
