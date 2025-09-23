@@ -100,6 +100,14 @@ struct AddEditMemoView: View {
                     .padding(8)
                     .lineLimit(5...10)
                     .focused($isTextFieldFocused)
+                    .toolbar {
+                        ToolbarItemGroup(placement: .keyboard) {
+                            Spacer()
+                            Button("完了") {
+                                isTextFieldFocused = false
+                            }
+                        }
+                    }
                 .background(Color(red: 0.95, green: 0.95, blue: 0.95))
                 .cornerRadius(12)
                 .overlay(
@@ -204,6 +212,12 @@ struct AddEditMemoView: View {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     isTextFieldFocused = true
                 }
+            }
+        }
+        .onTapGesture {
+            // キーボードを閉じるためのタップジェスチャー
+            if isTextFieldFocused {
+                isTextFieldFocused = false
             }
         }
     }
