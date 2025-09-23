@@ -15,6 +15,7 @@ struct ContentView: View {
     @State private var isDeletedEditMode = false
     @State private var showingSideMenu = false
     @State private var showingGenreSelection = false
+    @State private var isKeyboardVisible = false
     
     var body: some View {
         ZStack {
@@ -84,10 +85,12 @@ struct ContentView: View {
             }
         }
             .sheet(isPresented: $showingAddMemo) {
-                AddEditMemoView(memoManager: memoManager)
+                AddEditMemoView(memoManager: memoManager, isKeyboardVisible: $isKeyboardVisible)
+                    .interactiveDismissDisabled(isKeyboardVisible)
             }
             .sheet(item: $showingEditMemo) { memo in
-                AddEditMemoView(memoManager: memoManager, editingMemo: memo)
+                AddEditMemoView(memoManager: memoManager, editingMemo: memo, isKeyboardVisible: $isKeyboardVisible)
+                    .interactiveDismissDisabled(isKeyboardVisible)
             }
             .sheet(isPresented: $showingGenreSelection) {
                 GenreSelectionView(memoManager: memoManager, showingGenreSelection: $showingGenreSelection)

@@ -12,6 +12,7 @@ struct AddEditMemoView: View {
     @ObservedObject var memoManager: MemoManager
     
     let editingMemo: Memo?
+    @Binding var isKeyboardVisible: Bool
     
     @State private var title: String = ""
     @State private var hasNotification: Bool = true
@@ -21,9 +22,10 @@ struct AddEditMemoView: View {
     @State private var selectedGenre: String = ""
     @FocusState private var isTextFieldFocused: Bool
     
-    init(memoManager: MemoManager, editingMemo: Memo? = nil) {
+    init(memoManager: MemoManager, editingMemo: Memo? = nil, isKeyboardVisible: Binding<Bool> = .constant(false)) {
         self.memoManager = memoManager
         self.editingMemo = editingMemo
+        self._isKeyboardVisible = isKeyboardVisible
         
         if let memo = editingMemo {
             _title = State(initialValue: memo.title)
@@ -219,6 +221,9 @@ struct AddEditMemoView: View {
             if isTextFieldFocused {
                 isTextFieldFocused = false
             }
+        }
+        .onChange(of: isTextFieldFocused) { focused in
+            isKeyboardVisible = focused
         }
     }
     
