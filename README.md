@@ -1,0 +1,2 @@
+# smartmemo-support
+SmartMemo - シンプルリマインダーアプリのサポートページ
