@@ -62,4 +62,4 @@ SmartMemoは、シンプルで使いやすいリマインダーアプリです�
 
 ---
 
-© 2024 SmartMemo. All rights reserved.
+© 2025 SmartMemo. All rights reserved.
